@@ -1,6 +1,6 @@
-# A4: Fritter Visual
+# A3: Fritter Concepts
 
-Implement the good practice visual UI aspects into your `Fritter` in its entirety. Must support `Upvoting`, `Following`, and `Refreeting`.
+Add to your reactive UI and backend services to extend functionality of `Fritter` to support `Upvoting`, `Following`, and `Refreeting`.
 There is no starter code because we expect you to copy over the files from the previous assignment.
 
 
