@@ -240,6 +240,8 @@ export default {
 </script>
 
 <style>
+@import '../variables.scss';
+
 .freet-scroll-container {
     height: 70vh;
     /* padding: var(--m) var(--m); */

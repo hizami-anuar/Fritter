@@ -142,7 +142,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '../variables.scss';
+
 .editing-container {
   width: auto;
   border: 1px solid black;
@@ -151,6 +153,7 @@ export default {
 }
 .freet-container {
   width: 450px;
+  background: $white;
   border: 1px solid black;
   margin-top: 5px;
   padding: 3px;

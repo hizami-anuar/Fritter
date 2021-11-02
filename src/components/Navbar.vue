@@ -112,8 +112,9 @@ export default {
 };
 </script>
 
-<style>
+<style lang='scss'>
 @import url('https://fonts.googleapis.com/css2?family=Fjalla+One&family=Major+Mono+Display&family=Manuale&family=Open+Sans&family=Playfair+Display:wght@800&display=swap');
+@import '../variables.scss';
 
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -181,7 +182,7 @@ export default {
   display: flex;
   padding: 10px;
   margin: 0;
-  background-color: #8A92B1;
+  background-color: $red;
   height: auto;
   width: 100;
   top: 0;
