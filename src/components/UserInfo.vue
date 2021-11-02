@@ -10,7 +10,7 @@
       <form id="changeUsername" v-on:submit.prevent="changeUsername">
         <input
           type="submit"
-          value="update my username"
+          value="Update my Username"
           class="button"
           :disabled="username.length === 0"
           v-on:click.prevent="changeUsername"
@@ -29,7 +29,7 @@
       <form id="changePassword" v-on:submit.prevent="changePassword">
         <input
           type="submit"
-          value="update my password"
+          value="Update my Password"
           class="button"
           :disabled="password.length === 0"
           v-on:click.prevent="changePassword"
