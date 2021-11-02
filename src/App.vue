@@ -5,7 +5,6 @@
     </header>
     <CreateAccount v-if="showCreateAccount"/>
     <Login v-if="showLogin" />
-    <AccountSettings :user="user" v-if="showAccountSettings"/>
     <router-view 
       :user="user"
       :key="$route.fullPath"
@@ -18,16 +17,14 @@ import { eventBus } from './main';
 import Navbar from './components/Navbar.vue';
 import Login from "./components/Login.vue";
 import CreateAccount from "./components/CreateAccount.vue";
-import AccountSettings from './components/AccountSettings.vue';
 import axios from "axios";
 
 export default {
   name: "app",
-  components: { Navbar, Login, CreateAccount, AccountSettings },
+  components: { Navbar, Login, CreateAccount },
   data() {
     return {
       loggedIn: false,
-      showAccountSettings: false,
       showLogin: false,
       showCreateAccount: false,
       user: false
@@ -64,12 +61,6 @@ export default {
       this.loggedIn = false;
       this.user = false;
       eventBus.$emit("refresh-freets");
-    });
-    eventBus.$on("show-account-settings", () => {
-      this.showAccountSettings = true;
-    });
-    eventBus.$on("hide-account-settings", () => {
-      this.showAccountSettings = false;
     });
   },
   computed: {},

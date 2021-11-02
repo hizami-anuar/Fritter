@@ -39,12 +39,6 @@
             value="Logout"
             v-on:click.prevent="logout"
         />
-      <input
-          type="submit"
-          v-if="user"
-          value="Settings"
-          v-on:click.prevent="showAccountSettings"
-      />
       </div>
   </nav>
 </template>
@@ -104,9 +98,6 @@ export default {
       .catch((error) => {
         alert(error.response.data.message);
       })
-    },
-    showAccountSettings() {
-        eventBus.$emit("show-account-settings")
     },
   },
 };

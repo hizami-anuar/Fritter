@@ -19,7 +19,6 @@ export default {
   data() {
     return {
       loggedIn: false,
-      showAccountSettings: false,
       showLogin: false,
       showCreateAccount: false,
     };
