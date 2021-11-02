@@ -4,12 +4,18 @@
     <p>The content you are looking for has been deleted.</p>
     </div>
     <div v-else>
-    <h3> @{{refreet.author}}: </h3>
-    <div> Likes: {{refreet.likes.length}} </div>
-    <p>{{refreet.content}}</p>
-    <div v-if="refreet.refreet" class="refreet-refreet-container">This freet contains a refreet.</div>
-    <a href="javascript:;" @click="getRefreet"> View This Freet </a>
-    <div v-if="refreet.edited" class="edited-text">Edited</div>
+      <div class="refreet-header">
+        <span class="refreet-author-text"> @{{refreet.author}}: </span>
+      </div>
+      <div class="refreet-body">
+        <p>{{refreet.content}}</p>
+      </div>
+      <div class="refreet-footer">
+        <span> Likes: {{refreet.likes.length}} </span>
+        <span v-if="refreet.refreet" class="refreet-refreet-container">This freet contains a refreet.</span>
+        <a href="javascript:;" @click="getRefreet"> View This Freet </a>
+        <span v-if="refreet.edited" class="edited-text">Edited</span>
+      </div>
     </div>
   </div>
 </template>
@@ -32,21 +38,51 @@ export default {
 };
 </script>
 
-<style>
+<style lang='scss'>
+@import '../variables.scss';
+
 .refreet-container {
-  border: 1px solid black;
-  border-radius: 10px;
-  padding: 5px;
-  margin: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: $light-red;
+  border: 7.5px solid $light-red;
+  border-radius: 20px;
+  width: 90%;
+  margin: 10px;
+  overflow: hidden;
 }
+
 .refreet-refreet-container {
   border: 1px solid black;
   border-radius: 5px;
   margin: 5px;
 }
+
 .edited-text {
   width: 100%;
   text-align: right;
   font-weight: bold;
+}
+
+.refreet-header {
+  height: 20px;
+}
+
+.refreet-author-text {
+  margin: 0px;
+  padding: 0px;
+  font-weight: bold;
+  color: white;
+}
+
+
+.refreet-body {
+  background: white;
+  min-height: 60px;
+}
+
+.refreet-footer {
+  height: 20px;
 }
 </style>
