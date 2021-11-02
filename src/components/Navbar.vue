@@ -5,6 +5,10 @@
         <h1 class="NavBar-title"> Fritter </h1>
     </div>
 
+    <router-link to="/">Home</router-link> |
+    <router-link to="/explore">Explore</router-link>
+    <router-link to="/profile" v-if="user">Profile</router-link>
+
     <div>
       <input type="text" placeholder="Search by author name..." v-model="author"/>
       <input

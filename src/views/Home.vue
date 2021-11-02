@@ -1,58 +1,67 @@
 <template>
-  <div class="App-container">
-    <div class="Main-container">
-      <AllFreets :user="user"></AllFreets>
-      <!-- <div v-else>
-        <Navbar :user="user"></Navbar>  
-      </div> -->
+  <div class="home">
+    <img class="banner" alt="Welcome by Hooty" src="../assets/hooty-welcome.jpg"/>
+    <div v-if="user">
+      <main>
+        <h1>Hoot hoot! Go to <router-link to="/explore">Explore</router-link> to see other users' freets, or create your own!</h1>
+      </main>
+    </div>
+    <div v-else>
+      
+      <h1>Hoot hoot! Welcome to Fritter! Create an account or login to begin!</h1>
     </div>
   </div>
 </template>
 
 <script>
-import AllFreets from '../components/AllFreets.vue';
-
+import axios from 'axios';
+import { eventBus } from "../main";
 
 export default {
-  name: "home",
-  props: ["user"],
-  data() {
-    return {
-      loggedIn: false,
-      showAccountSettings: false,
-      showLogin: false,
-      showCreateAccount: false,
-    };
+  name: 'Home',
+  props: ['user'],
+  mounted: function () {
+    this.getFreets(); // when the page is initially loaded, get the list of freets by all authors to display.
+
+    /**
+     * User just finished editing a Freet. Get Freets again.
+     */
+    eventBus.$on('freet-action-finished', () => {
+      this.getFreets();
+    });
   },
-  components: { AllFreets },
+  data: function () {
+    return {
+      freets: [], // list of freets to display in the feed
+    }
+  },
+  components: {
+  },
+  methods: {
+    getFreets() {
+      if (this.user) {
+        axios
+          .get('/api/followers/feed')
+          .then(response => {
+            this.freets = response.data.freets.slice().reverse()
+            // Sort by likes? response.data.freets.sort((freetA, freetB) => freetB.upvoteCount - freetA.upvoteCount);
+          })
+      }
+    }
+  },
 }
 </script>
 
-<style>
-.App-container {
-    max-width: 100%;
-    width: 100vw;
-    height: 98vh;
-    /* padding: var(--m) var(--m); */
-    /* margin: auto; */
-    overflow: hidden;
-}
+<style scoped>
+  .banner {
+    width: 70%;
+    max-height: 500px;
+    border-radius: 15px;
+    object-fit: cover;
+  }
 
-.Main-container {
-    width: auto;
-    max-width: 50vw;
-    margin: auto;
-    height: 100%;
-    left: 0px;
-    top: 0px;
-
-    padding: 0px 24px;
-
-    background: #fafafa;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
-}
+  .spacer {
+    width: 100%;
+    height: 1em;
+  }
 </style>
