@@ -126,6 +126,17 @@ class User {
     }
     return unfollowingUser;
   }
+
+  /**
+   * Get a user's followers
+   * 
+   * @param {number} userID - id of user
+   * @return {User[]]} - list of users following that user
+   */
+   static getFollowers(userID) {
+    const result = data.filter((user) => user.following.includes(userID)).map((user) => user.username)
+    return result;
+  }
 }
 
 module.exports = User;

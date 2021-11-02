@@ -1,15 +1,22 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Profile from '../views/Profile.vue'
 import ErrorPage from '../views/ErrorPage.vue'
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
+    path: '/explore',
     name: 'Freets',
     component: Home
+  },
+  {
+    path: "/profile/:username?",
+    name: "Profile",
+    component: Profile,
+    props: true,
   },
   {
     path: '/*',

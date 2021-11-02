@@ -95,6 +95,43 @@ router.delete('/', [
   });
 
 /**
+ * Get list of users that are following a user.
+ * 
+ * @name GET /api/users/:username/followers
+ * 
+ * @param {string} username- user
+ * @return {User[]} - list of user's followers
+ * @throws {404} - if non-existent user
+ */
+ router.get('/:username/followers',
+    [
+
+    ], 
+  (req, res) => {
+    const userID = Users.findOneUsername(req.params.username).userID;
+    const followers = Users.getFollowers(userID);
+    res.status(200).json(followers).end();
+  });
+
+  /**
+ * Get list of users that a user is following
+ * 
+ * @name GET /api/users/:username/following
+ * 
+ * @param {string} username - user
+ * @return {User[]} - list of user's followers
+ * @throws {404} - if non-existent user
+ */
+ router.get('/:username/following',
+ [
+
+ ], 
+(req, res) => {
+ const following = Users.findOneUsername(req.params.username).following;
+ res.status(200).json(following).end();
+});
+
+/**
  * Follow another user.
  * 
  * @name PATCH /api/users/:followingUserID/following

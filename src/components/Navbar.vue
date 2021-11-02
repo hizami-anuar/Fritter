@@ -1,5 +1,6 @@
 <template>
   <nav class="NavBar-main">
+    <img alt="Fritter logo" src="../assets/navlogo.png" class="logo">
     <div class="">
         <h1 class="NavBar-title"> Fritter </h1>
     </div>
@@ -109,6 +110,60 @@ export default {
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fjalla+One&family=Major+Mono+Display&family=Manuale&family=Open+Sans&family=Playfair+Display:wght@800&display=swap');
+
+#app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #2c3e50;
+  }
+
+  .logo {
+    width: 50px;
+  }
+
+  nav {
+    background-color: lightgray;
+    display: flex;
+    align-items: center;
+    width: calc(100% - 20px);
+    padding: 10px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 200;
+  }
+
+  nav a {
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 10px;
+  }
+
+  nav a.router-link-exact-active {
+    color: #18b56edb;
+  }
+
+  #welcome {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0;
+  }
+
+  #welcomeMessage {
+    margin: 0 20px;
+  }
+
+  .hspacer {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .vspacer {
+    height: 100px;
+    width: 100%;
+  }
 
 .NavBar-container {
   position: relative;
