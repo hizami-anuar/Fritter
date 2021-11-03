@@ -1,6 +1,14 @@
 $white: #e8dbc5;
 $black: #3f292b;
 $purple: #9d44b5;
+$light-purple: #c289d2;
 $red: #f45b69;
 $light-red: #f88c95;
 $light-blue: #0affed;
+
+:export {
+  red: $red;
+  lightRed: $light-red;
+  purple: $purple;
+  lightPurple: $light-purple;
+}

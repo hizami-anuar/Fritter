@@ -1,5 +1,5 @@
 <template>
-  <div v-if="refreet" class="refreet-container">
+  <div v-if="refreet" class="refreet-container" :style="{'--refreetColor': user.userID===refreet.userID ? variables.lightPurple : variables.lightRed }">
     <div v-if="refreet == 'deleted'">
     <p>The content you are looking for has been deleted.</p>
     </div>
@@ -22,12 +22,14 @@
 
 <script>
 import {eventBus} from "../main";
+import variables from '../variables.scss';
 
 export default {
   name: "Refreet",
-  props: ["refreet"],
+  props: ["user", "refreet"],
   data() {
     return {
+      variables,
     };
   },
   methods: {
@@ -45,8 +47,8 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: $light-red;
-  border: 7.5px solid $light-red;
+  background: var(--refreetColor);
+  border: 7.5px solid var(--refreetColor);
   border-radius: 20px;
   width: 90%;
   margin: 10px;
