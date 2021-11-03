@@ -104,6 +104,7 @@ export default {
       this.getSingleFreet(data.id);
     })
     eventBus.$on('show-all-freets', () => {
+      this.$router.push({ name: 'Explore' }).catch(()=>{});
       this.getFreets();
     })
     eventBus.$on('show-following', (data) => {
