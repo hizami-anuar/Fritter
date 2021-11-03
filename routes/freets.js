@@ -15,23 +15,35 @@ const router = express.Router();
  * @return {Freet[]} - list of all stored freets
  */
 router.get('/', (req, res) => {
+  let freets = [];
   if (req.query.id) {
-      const freets = Freets.findOneWithAuthor(req.query.id);
-      res.status(200).json(freets).end();
+    freets = Freets.findOneWithAuthor(req.query.id);
   } else if (req.query.author) {
     const author = Users.findOneUsername(req.query.author);
     if (author) {
-      const freets = Freets.findAllByUserIDWithAuthor(author.userID);
-      res.status(200).json(freets).end();
+      freets = Freets.findAllByUserIDWithAuthor(author.userID);
     } else {
-      const freets = [];
-      res.status(200).json(freets).end();
+      freets = [];
     }
   } else {
-    const freets = Freets.findAllWithAuthor();
-    res.status(200).json(freets).end();
+    freets = Freets.findAllWithAuthor();
   }
+  const sort = req.query.sort;
+  freets = freets.reverse();
+  if (sort == "popular") {
+    freets.sort(function(a, b){return b.likes.length - a.likes.length});
+  }
+  res.status(200).json(freets).end();
 });
+
+/**
+ * Get refreet chain of a freet
+ */
+router.get('/:id/children', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  let freet = Freets.getChildren(id);
+  res.status(200).json(freet).end();
+})
 
 /**
  * Create a freet.

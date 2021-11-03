@@ -1,83 +1,92 @@
 <template>
-  <div>
-    <form id="newFreet" v-if="user">
-      <span>Welcome {{user.username}}! You are signed in. </span>
-      <div>
-          <input type="text" id="username" placeholder="Compose your new freet here!" name="composeFreet" v-model="newFreet">
-      </div>
-      <input
-        type="submit"
-        value="Post"
-        :disabled="!newFreet"
-        v-on:click.prevent="createNewFreet"
-      />
-      <div v-if="invalidFreet">
-          {{this.freetFailMessage}}
-      </div>
-    </form>
-    <span v-else>You're welcome to browse Freets without an account, but please log in or create an account to post Freets of your own!</span>
+  <div class="two-panel-container">
+    <div>
+      <form id="newFreet" v-if="user">
+        <span>Welcome {{user.username}}! You are signed in. </span>
+        <div>
+            <input type="text" id="username" placeholder="Compose your new freet here!" name="composeFreet" v-model="newFreet">
+        </div>
+        <input
+          type="submit"
+          value="Post"
+          :disabled="!newFreet"
+          v-on:click.prevent="createNewFreet"
+        />
+        <div v-if="invalidFreet">
+            {{this.freetFailMessage}}
+        </div>
+      </form>
+      <span v-else>You're welcome to browse Freets without an account, but please log in or create an account to post Freets of your own!</span>
 
-    <hr/>
-
-    <div v-if="viewingId || searchingAuthor">
-      <div v-if="viewingId">
-        <span v-if="allFreets.length > 0">You are viewing Freet with ID {{viewingId}}</span>
-        <span v-else>No Freets with ID {{viewingId}} exist.</span>
-      </div>
-      <div v-else>
-        <span>You are searching for Freets by {{searchingAuthor}}</span>
-      </div>
-      <br/>
-      <div>
-        <a href="#" @click="showAllFreets">Show all freets instead</a>
-        <span v-if="user">
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-          <a href="#" @click="showFollowing">Show following instead</a>
-        </span>
-      </div>
       <hr/>
-    </div>
-    <div v-else>
-      <div v-if="user && !viewFollowing">You are viewing all freets. <button @click="showFollowing" >View Following Only</button></div>
-      <div v-if="viewFollowing">
-        <span v-if="user">You are viewing freets from accounts you are following. </span>
-        <span v-else>You must log in to view freets from accounts you are following! </span>
-        <button @click="showAllFreets">View All</button>
-      </div>
-    </div>
-    <hr/>
 
-    <div class="sort-container">
-      <div class="sort-item" v-on:click="setSortNewest">
-        <img class="sort-icon" src="../assets/logo.png" />
-        <p class="sort-text">Newest</p>
-      </div>
-      <div class="sort-item" v-on:click="setSortPopular">
-        <img class="sort-icon" src="../assets/logo.png" />
-        <p class="sort-text">Popular</p>
-      </div>
-    </div>
-
-    <div class="freet-scroll-container">
-        <div v-if="sortByLike">
-          <Freet v-for="freet of sortedFreetsByLikes" v-bind:key="freet.freetID" :freet="freet" :user="user"></Freet>
+      <div v-if="viewingId || searchingAuthor">
+        <div v-if="viewingId">
+          <span v-if="allFreets.length > 0">You are viewing Freet with ID {{viewingId}}</span>
+          <span v-else>No Freets with ID {{viewingId}} exist.</span>
         </div>
         <div v-else>
-          <Freet v-for="freet of sortedFreetsChronological" v-bind:key="freet.freetID" :freet="freet" :user="user"></Freet>
+          <span>You are searching for Freets by {{searchingAuthor}}</span>
         </div>
-    </div>
+        <br/>
+        <div>
+          <a href="#" @click="showAllFreets">Show all freets instead</a>
+          <span v-if="user">
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <a href="#" @click="showFollowing">Show following instead</a>
+          </span>
+        </div>
+        <hr/>
+      </div>
+      <div v-else>
+        <div v-if="user && !viewFollowing">You are viewing all freets. <button @click="showFollowing" >View Following Only</button></div>
+        <div v-if="viewFollowing">
+          <span v-if="user">You are viewing freets from accounts you are following. </span>
+          <span v-else>You must log in to view freets from accounts you are following! </span>
+          <button @click="showAllFreets">View All</button>
+        </div>
+      </div>
+      <hr/>
 
+      <div class="sort-container">
+        <div class="sort-item" v-on:click="setSortNewest">
+          <img class="sort-icon" src="../assets/logo.png" />
+          <p class="sort-text">Newest</p>
+        </div>
+        <div class="sort-item" v-on:click="setSortPopular">
+          <img class="sort-icon" src="../assets/logo.png" />
+          <p class="sort-text">Popular</p>
+        </div>
+      </div>
+
+      <div class="freet-scroll-container">
+          <div v-if="sortByLike">
+            <Freet v-for="freet of sortedFreetsByLikes" v-bind:key="freet.freetID" :freet="freet" :user="user"></Freet>
+          </div>
+          <div v-else>
+            <Freet v-for="freet of sortedFreetsChronological" v-bind:key="freet.freetID" :freet="freet" :user="user"></Freet>
+          </div>
+      </div>
+
+    </div>
+    <div v-if="refreetChain">
+      <RefreetChain 
+        :freet="refreetChain"
+        :user="user"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import Freet from "./Freet";
+import RefreetChain from "./RefreetChain";
 import {eventBus} from "../main";
 
 export default {
   name: "AllFreets",
-  components: { Freet },
+  components: { Freet, RefreetChain },
   props: ["user"],
   data() {
     return {
@@ -88,7 +97,8 @@ export default {
         searchingAuthor: "",
         viewingId: "",
         viewFollowing: false,
-        sortByLike: false
+        sortByLike: false,
+        refreetChain: undefined,
     };
   },
   created: function() {
@@ -96,7 +106,6 @@ export default {
       this.toggleSort();
     })
     eventBus.$on('refresh-freets', () => {
-      console.log('freets refreshed');
       this.refreshFreets();
     })
     eventBus.$on('show-single-freet', (data) => {
@@ -115,6 +124,9 @@ export default {
       this.$router.push({ name: 'Explore', query: { author: data.author } }).catch(()=>{});
       this.search(data.author)
     })
+    eventBus.$on('show-refreet-chain', (data) => {
+      this.getRefreetChain(data.id);
+    })
   },
   mounted: function() {
     this.refreshFreets();
@@ -128,6 +140,16 @@ export default {
     }
   },
   methods: {
+    getRefreetChain: function(id) {
+      axios.get(`/api/freets/${encodeURIComponent(id)}/children`)
+      .then((result) => {
+        console.log(result.data);
+        this.refreetChain = result.data;
+      }).catch((error) => {
+        console.log(error);
+      })
+    },
+
     showFollowing: function() {
       eventBus.$emit('show-following', {following: 'true'});
     },
@@ -247,8 +269,13 @@ export default {
 };
 </script>
 
-<style lang='scss'>
+<style lang='scss' scoped>
 @import '../variables.scss';
+
+.two-panel-container {
+  display: flex;
+  flex-direction: row;
+}
 
 .freet-scroll-container {
     height: 70vh;

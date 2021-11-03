@@ -10,6 +10,7 @@ const Users = require('../models/User');
  * @prop {boolean} edited - a boolean to denote whether the post has been edited or not.
  * @prop {number[]} likes - a list of user IDs of users who have liked this freet.
  * @prop {Freet} refreet - optional property, freet that is refreeted by this freet
+ * @prop {number[]} refreetedBy - a list of freets that have refreeted this freet
  */
 
 /**
@@ -28,10 +29,30 @@ class Freet {
    */
   static addOne(content, userID, refreet=undefined) {
     const edited = false;
-    const freet = { "content": content, "freetID": nextFreetID, "userID": userID, edited, "likes": [], refreet: refreet };
+    const freet = { "content": content, "freetID": nextFreetID, "userID": userID, edited, "likes": [], refreet: refreet, refreetedBy: [] };
     nextFreetID++;
+    if (freet.refreet) {
+      let refreet = Freet.findOne(freet.refreet);
+      if (refreet) {
+        refreet.refreetedBy.push(freet.freetID);
+      }
+    } 
     data.push(freet);
     return freet;
+  }
+
+  /**
+   * Get the refreet children of a freet recursively
+   * @param {number} freetID - ID of freet 
+   * @return {Freet} - refreet children chain
+   */
+  static getChildren(freetID) {
+    let freet = this.findOneWithAuthor(freetID);
+    freet.children = [];
+    for (let refreet of freet.refreetedBy) {
+      freet.children.push(Freet.getChildren(refreet));
+    }
+    return freet
   }
 
   /**
@@ -43,7 +64,6 @@ class Freet {
     let result = Object.assign({}, freet);
     if (freet.refreet) {
       result.refreet = Freet.findOneWithAuthor(freet.refreet) || "deleted";
-      console.log(result.refreet);
     } else {
       freet.refreet = undefined;
     }

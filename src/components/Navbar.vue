@@ -74,7 +74,7 @@ export default {
       })
     },
     loginPage() {
-        eventBus.$emit("show-login", { name: "Home" })
+        eventBus.$emit("show-login")
     },
     createAccountPage() {
         eventBus.$emit("show-create-account")

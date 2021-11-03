@@ -49,7 +49,7 @@ export default {
     /** 
      * Force login popup and redirect close button to Home
      */
-    eventBus.$on('show-login', (cancelDest) => {
+    eventBus.$on('show-login', (cancelDest=null) => {
        this.cancelDest = cancelDest;
        this.activate();
     });
@@ -62,8 +62,9 @@ export default {
     createAccount() {
         axios
         .post('/api/users/', {'username': this.username, 'password': this.password})
-        .then(() => {
-            this.logIn();
+        .then((result) => {
+          eventBus.$emit('user-login-success', result);
+          this.deactivate();
         })
         .catch(error => {
             this.errorMessage = error.response.data.error;

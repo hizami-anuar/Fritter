@@ -8,7 +8,6 @@
       </div>
       <div class="freet-body">
         <p class="freet-body-text">{{freet.content}}</p>
-        <Refreet :refreet="freet.refreet" :user="user"></Refreet>
         <button v-on:click="getRefreetChain">Get Refreet Chain</button>
       
         <div v-if="editing" class="editing-container">
@@ -37,18 +36,28 @@
         <span v-if="freet.edited" class="edited-text">Edited</span>
       </div>
     </div>
+    <div class="children-container">
+      <div class="children-left-bar"></div>
+      <div class="children-display">
+        <RefreetChain 
+          v-for="refreet of freet.children"
+          :key="refreet.id"
+          :freet="refreet" 
+          :user="user">
+        </RefreetChain>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import {eventBus} from "../main";
-import Refreet from "./Refreet";
 import variables from '../variables.scss';
 
 export default {
-  name: "Freet",
-  components: { Refreet },
+  name: "RefreetChain",
+  components: {},
   props: ["freet", "user"],
   created: function () {},
   methods: {
@@ -159,6 +168,26 @@ export default {
 <style lang="scss" scoped>
 @import '../variables.scss';
 
+.children-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.children-left-bar {
+  position: relative;
+  left: 50px;
+  height: auto;
+  width: 10px;
+  background-color: $purple;
+}
+
+.children-display {
+  position: relative;
+  left: 25px;
+  display: flex;
+  flex-direction: column;
+}
+
 .editing-container {
   width: auto;
   border: 1px solid black;
@@ -181,7 +210,7 @@ export default {
   width: 450px;
   border: 7.5px solid var(--freet-color);
   border-radius: 20px;
-  margin-top: 5px;
+  margin-top: 20px;
   margin-left: auto;
   margin-right: auto;
   overflow: hidden;

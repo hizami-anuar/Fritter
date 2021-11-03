@@ -32,7 +32,6 @@ export default {
     max-width: 100%;
     width: 100vw;
     height: 98vh;
-    overflow: hidden;
 }
 
 .Main-container {
