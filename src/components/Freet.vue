@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div class="freet-container" :style="{'--freetColor': user.userID===freet.userID ? variables.purple : variables.red }">
+    <div class="freet-container" :style="{'--freet-color': user.userID===freet.userID ? variables.purple : variables.red }">
       <div class="freet-header">
         <span class="freet-author-text"> @{{freet.author}}:</span>
-      </div>
-      <div class="freet-body">
         <button @click="follow" v-if="this.user && !isFollowing()">Follow</button>
         <button @click="unfollow" v-if="this.user && isFollowing()">Unfollow</button>
-        <p>{{freet.content}}</p>
+      </div>
+      <div class="freet-body">
+        <p class="freet-body-text">{{freet.content}}</p>
         <Refreet :refreet="freet.refreet" :user="user"></Refreet>
       
         <div v-if="editing" class="editing-container">
@@ -176,13 +176,13 @@ export default {
   justify-content: space-between;
   align-items: center;
   width: 450px;
-  border: 7.5px solid var(--freetColor);
+  border: 7.5px solid var(--freet-color);
   border-radius: 20px;
   margin-top: 5px;
   margin-left: auto;
   margin-right: auto;
   overflow: hidden;
-  background-color: var(--freetColor);
+  background-color: var(--freet-color);
 }
 
 .edited-text {
@@ -192,7 +192,10 @@ export default {
 }
 
 .freet-header {
+  display: flex;
+  justify-content: flex-start;
   height: 20px;
+  width: 100%;
 }
 
 .freet-author-icon {
@@ -219,6 +222,18 @@ export default {
   align-items: center;
   background: white;
   width: 100%;
+  padding: 10px 0 0 0;
+  border-radius: 10px;
+}
+
+.freet-body-text {
+  display: flex;
+  justify-content: flex-start;
+  width: 90%;
+  margin: 0px;
+  padding: 0px;
+  font-weight: bold;
+  color: black;
 }
 
 .freet-footer {
