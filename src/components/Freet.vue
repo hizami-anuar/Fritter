@@ -221,6 +221,7 @@ export default {
   flex-direction: column;
   align-items: center;
   background: white;
+  min-height: 60px;
   width: 100%;
   padding: 10px 0 0 0;
   border-radius: 10px;

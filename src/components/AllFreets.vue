@@ -92,19 +92,19 @@ export default {
       this.refreshFreets();
     })
     eventBus.$on('show-single-freet', (data) => {
-      this.$router.push({ name: 'Freets', query: { id: data.id } }).catch(()=>{});
+      this.$router.push({ name: 'Explore', query: { id: data.id } }).catch(()=>{});
       this.getSingleFreet(data.id);
     })
     eventBus.$on('show-all-freets', () => {
-      this.$router.push({ name: 'Freets' }).catch(()=>{});
+      this.$router.push({ name: 'Explore' }).catch(()=>{});
       this.getFreets();
     })
     eventBus.$on('show-following', (data) => {
-      this.$router.push({ name: 'Freets', query: { following: data.following } }).catch(()=>{});
+      this.$router.push({ name: 'Explore', query: { following: data.following } }).catch(()=>{});
       this.getFollowing();
     })
     eventBus.$on('search', (data) => {
-      this.$router.push({ name: 'Freets', query: { author: data.author } }).catch(()=>{});
+      this.$router.push({ name: 'Explore', query: { author: data.author } }).catch(()=>{});
       this.search(data.author)
     })
   },
@@ -227,12 +227,12 @@ export default {
         this.sortByLike = false;
         let query = Object.assign({}, this.$route.query);
         query.sort = 'newest';
-        this.$router.push({ name: 'Freets', query: query }).catch(()=>{});
+        this.$router.push({ name: 'Explore', query: query }).catch(()=>{});
       } else {
         this.sortByLike = true;
         let query = Object.assign({}, this.$route.query);
         query.sort = 'popular';
-        this.$router.push({ name: 'Freets', query: query }).catch(()=>{});
+        this.$router.push({ name: 'Explore', query: query }).catch(()=>{});
       }
     }
   },
