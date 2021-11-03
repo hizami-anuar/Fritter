@@ -49,7 +49,7 @@ import variables from '../variables.scss';
 export default {
   name: "Freet",
   components: { Refreet },
-  props: ["freet", "user"],
+  props: ["freet", "user", "complex"],
   created: function () {},
   methods: {
     deleteFreet: function () {
@@ -178,7 +178,7 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  width: 450px;
+  width: 500px;
   border: 7.5px solid var(--freet-color);
   border-radius: 20px;
   margin-top: 5px;

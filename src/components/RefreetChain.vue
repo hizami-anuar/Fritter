@@ -207,7 +207,7 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  width: 450px;
+  width: 500px;
   border: 7.5px solid var(--freet-color);
   border-radius: 20px;
   margin-top: 20px;

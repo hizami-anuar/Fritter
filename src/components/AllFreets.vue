@@ -60,12 +60,7 @@
       </div>
 
       <div class="freet-scroll-container">
-          <div v-if="sortByLike">
-            <Freet v-for="freet of sortedFreetsByLikes" v-bind:key="freet.freetID" :freet="freet" :user="user"></Freet>
-          </div>
-          <div v-else>
-            <Freet v-for="freet of sortedFreetsChronological" v-bind:key="freet.freetID" :freet="freet" :user="user"></Freet>
-          </div>
+          <Freet v-for="freet of allFreets" v-bind:key="freet.freetID" :freet="freet" :user="user" :complex="true"></Freet>
       </div>
 
     </div>
@@ -97,7 +92,7 @@ export default {
         searchingAuthor: "",
         viewingId: "",
         viewFollowing: false,
-        sortByLike: false,
+        sort: "newest",
         refreetChain: undefined,
     };
   },
@@ -131,14 +126,6 @@ export default {
   mounted: function() {
     this.refreshFreets();
   },
-  computed: {
-    sortedFreetsChronological: function () {
-      return [...this.allFreets].sort((a,b) => b.freetID - a.freetID)
-    },
-    sortedFreetsByLikes: function () {
-      return [...this.sortedFreetsChronological].sort((a,b) => b.likes.length - a.likes.length)
-    }
-  },
   methods: {
     getRefreetChain: function(id) {
       axios.get(`/api/freets/${encodeURIComponent(id)}/children`)
@@ -159,7 +146,7 @@ export default {
     },
     
     search(author) {
-      axios.get(`/api/freets/?author=${encodeURIComponent(author)}`)
+      axios.get(`/api/freets/?author=${encodeURIComponent(author)}&sort=${this.sort}`)
         .then((result) => {
           this.allFreets = result.data;
           this.searchingAuthor = author;
@@ -198,7 +185,7 @@ export default {
     },
     
     getFreets() {
-      axios.get("/api/freets")
+      axios.get(`/api/freets?sort=${this.sort}`)
         .then((result) => {
           this.allFreets = result.data;
           this.searchingAuthor = "";
@@ -217,9 +204,9 @@ export default {
 
       if (q.sort) {
         if (q.sort == 'popular') {
-          this.sortByLike = true;
+          this.sort = 'popular';
         } else {
-          this.sortByLike = false;
+          this.sort = 'newest';
         }
       }
 
@@ -253,14 +240,14 @@ export default {
     },
 
     setSortNewest() {
-      this.sortByLike = false;
+      this.sort = "newest";
       let query = Object.assign({}, this.$route.query);
       query.sort = 'newest';
       this.$router.push({ name: 'Explore', query: query }).catch(()=>{});
     },
 
     setSortPopular() {
-      this.sortByLike = true;
+      this.sort = "popular";
       let query = Object.assign({}, this.$route.query);
       query.sort = 'popular';
       this.$router.push({ name: 'Explore', query: query }).catch(()=>{});
