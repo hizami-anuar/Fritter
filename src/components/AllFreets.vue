@@ -47,8 +47,16 @@
     </div>
     <hr/>
 
-    <div v-if="sortByLike">Currently sorting by like count. <button @click="toggleSort">Sort chronologically</button></div>
-    <div v-if="!sortByLike">Currently sorting chronologically. <button @click="toggleSort">Sort by like count</button></div>
+    <div class="sort-container">
+      <div class="sort-item" v-on:click="setSortNewest">
+        <img class="sort-icon" src="../assets/logo.png" />
+        <p class="sort-text">Newest</p>
+      </div>
+      <div class="sort-item" v-on:click="setSortPopular">
+        <img class="sort-icon" src="../assets/logo.png" />
+        <p class="sort-text">Popular</p>
+      </div>
+    </div>
 
     <div class="freet-scroll-container">
         <div v-if="sortByLike">
@@ -222,24 +230,24 @@ export default {
       eventBus.$emit('change-sort');
     },
 
-    toggleSort() {
-      if (this.sortByLike) {
-        this.sortByLike = false;
-        let query = Object.assign({}, this.$route.query);
-        query.sort = 'newest';
-        this.$router.push({ name: 'Explore', query: query }).catch(()=>{});
-      } else {
-        this.sortByLike = true;
-        let query = Object.assign({}, this.$route.query);
-        query.sort = 'popular';
-        this.$router.push({ name: 'Explore', query: query }).catch(()=>{});
-      }
-    }
+    setSortNewest() {
+      this.sortByLike = false;
+      let query = Object.assign({}, this.$route.query);
+      query.sort = 'newest';
+      this.$router.push({ name: 'Explore', query: query }).catch(()=>{});
+    },
+
+    setSortPopular() {
+      this.sortByLike = true;
+      let query = Object.assign({}, this.$route.query);
+      query.sort = 'popular';
+      this.$router.push({ name: 'Explore', query: query }).catch(()=>{});
+    },
   },
 };
 </script>
 
-<style>
+<style lang='scss'>
 @import '../variables.scss';
 
 .freet-scroll-container {
@@ -248,4 +256,27 @@ export default {
     /* margin: auto; */
     overflow-y: auto;
 }
+
+.sort-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.sort-item {
+  cursor: pointer;
+}
+
+.sort-icon {
+  width: 150px;
+  height: 150px;
+}
+
+.sort-text {
+  margin: 0px;
+  padding: 0px;
+  font-size: 40px;
+  font-weight: bolder;
+  color: $red;
+}
+
 </style>

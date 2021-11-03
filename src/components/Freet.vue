@@ -193,7 +193,7 @@ export default {
 
 .freet-header {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   height: 20px;
   width: 100%;
 }
@@ -245,5 +245,6 @@ export default {
     width: 15px;
     height: 15px;
     margin: 0px 2px 0px 2px;
+    cursor: pointer;
   }
 </style>
