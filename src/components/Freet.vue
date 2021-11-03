@@ -1,38 +1,40 @@
 <template>
-  <div class="freet-container">
-    <div class="freet-header">
-      <span class="freet-author-text"> @{{freet.author}}:</span>
-    </div>
-    <div class="freet-body">
-      <button @click="follow" v-if="this.user && !isFollowing()">Follow</button>
-      <button @click="unfollow" v-if="this.user && isFollowing()">Unfollow</button>
-      <p>{{freet.content}}</p>
-      <Refreet :refreet="freet.refreet"></Refreet>
-    
-      <div v-if="editing" class="editing-container">
-          <input type="text" v-model="newContent" placeholder="New content here">
-          <button @click="save" :disabled="!newContent">Save</button>
-          <button @click="cancel">Cancel</button>
-          <div v-if="this.editFreetError">{{this.editFreetError}}</div>
+  <div>
+    <div class="freet-container" :style="{'--freet-color': user.userID===freet.userID ? variables.purple : variables.red }">
+      <div class="freet-header">
+        <span class="freet-author-text"> @{{freet.author}}:</span>
+        <button @click="follow" v-if="this.user && !isFollowing()">Follow</button>
+        <button @click="unfollow" v-if="this.user && isFollowing()">Unfollow</button>
       </div>
-      <div v-if="refreeting" class="refreeting-container">
-          <input type="text" v-model="refreetContent" placeholder="New content here">
-          <button @click="submitRefreet" :disabled="!refreetContent">Save</button>
-          <button @click="cancelRefreet">Cancel</button>
-          <div v-if="this.refreetError">{{this.refreetError}}</div>
+      <div class="freet-body">
+        <p class="freet-body-text">{{freet.content}}</p>
+        <Refreet :refreet="freet.refreet" :user="user"></Refreet>
+      
+        <div v-if="editing" class="editing-container">
+            <input type="text" v-model="newContent" placeholder="New content here">
+            <button @click="save" :disabled="!newContent">Save</button>
+            <button @click="cancel">Cancel</button>
+            <div v-if="this.editFreetError">{{this.editFreetError}}</div>
+        </div>
+        <div v-if="refreeting" class="refreeting-container">
+            <input type="text" v-model="refreetContent" placeholder="New content here">
+            <button @click="submitRefreet" :disabled="!refreetContent">Save</button>
+            <button @click="cancelRefreet">Cancel</button>
+            <div v-if="this.refreetError">{{this.refreetError}}</div>
+        </div>
       </div>
-    </div>
 
-    <div class="freet-footer">
-      <img v-if='this.user && !liked()' class="logo" v-on:click="like" src="../assets/empty-heart.svg"/>
-      <img v-else-if='this.user && liked()' class="logo" v-on:click="unlike" src="../assets/filled-heart.svg"/>
-      <span v-if="likeError"> {{this.likeError}} </span>
-      <span> {{freet.likes.length}} </span>
-      <a href="javascript:;" @click="editing=true" v-if="user.userID===freet.userID">Edit freet</a> &nbsp;
-      <a href="javascript:;" @click="deleteFreet" v-if="user.userID===freet.userID">Delete freet</a> &nbsp;
-      <a href="javascript:;" @click="refreeting=true" v-if="user.userID">Refreet</a>
-      <span> Freet ID {{freet.freetID}} </span>
-      <span v-if="freet.edited" class="edited-text">Edited</span>
+      <div class="freet-footer">
+        <img v-if='this.user && !liked()' class="logo" v-on:click="like" src="../assets/empty-heart.svg"/>
+        <img v-else-if='this.user && liked()' class="logo" v-on:click="unlike" src="../assets/filled-heart.svg"/>
+        <span v-if="likeError"> {{this.likeError}} </span>
+        <span> {{freet.likes.length}} </span>
+        <a href="javascript:;" @click="editing=true" v-if="user.userID===freet.userID">Edit freet</a> &nbsp;
+        <a href="javascript:;" @click="deleteFreet" v-if="user.userID===freet.userID">Delete freet</a> &nbsp;
+        <a href="javascript:;" @click="refreeting=true" v-if="user.userID">Refreet</a>
+        <span> Freet ID {{freet.freetID}} </span>
+        <span v-if="freet.edited" class="edited-text">Edited</span>
+      </div>
     </div>
   </div>
 </template>
@@ -41,6 +43,7 @@
 import axios from "axios";
 import {eventBus} from "../main";
 import Refreet from "./Refreet";
+import variables from '../variables.scss';
 
 export default {
   name: "Freet",
@@ -136,6 +139,7 @@ export default {
   },
   data() {
     return {
+      variables: variables,
       editing: false,
       editFreetError: "",
       newContent: "",
@@ -143,6 +147,7 @@ export default {
       refreeting: false,
       refreetError: "",
       refreetContent: "",
+      freetColor: "$red", 
     }
   }
 }
@@ -171,13 +176,13 @@ export default {
   justify-content: space-between;
   align-items: center;
   width: 450px;
-  background: $red;
-  border: 7.5px solid $red;
+  border: 7.5px solid var(--freet-color);
   border-radius: 20px;
   margin-top: 5px;
   margin-left: auto;
   margin-right: auto;
   overflow: hidden;
+  background-color: var(--freet-color);
 }
 
 .edited-text {
@@ -187,8 +192,10 @@ export default {
 }
 
 .freet-header {
+  display: flex;
+  justify-content: space-between;
   height: 20px;
-  background: $red;
+  width: 100%;
 }
 
 .freet-author-icon {
@@ -214,17 +221,30 @@ export default {
   flex-direction: column;
   align-items: center;
   background: white;
+  min-height: 60px;
   width: 100%;
+  padding: 10px 0 0 0;
+  border-radius: 10px;
+}
+
+.freet-body-text {
+  display: flex;
+  justify-content: flex-start;
+  width: 90%;
+  margin: 0px;
+  padding: 0px;
+  font-weight: bold;
+  color: black;
 }
 
 .freet-footer {
   height: 20px;
-  background: $red;
 }
 
 .logo {
     width: 15px;
     height: 15px;
     margin: 0px 2px 0px 2px;
+    cursor: pointer;
   }
 </style>

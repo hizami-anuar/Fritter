@@ -1,5 +1,5 @@
 <template>
-  <div v-if="refreet" class="refreet-container">
+  <div v-if="refreet" class="refreet-container" :style="{'--refreet-color': user.userID===refreet.userID ? variables.lightPurple : variables.lightRed }">
     <div v-if="refreet == 'deleted'">
     <p>The content you are looking for has been deleted.</p>
     </div>
@@ -8,11 +8,10 @@
         <span class="refreet-author-text"> @{{refreet.author}}: </span>
       </div>
       <div class="refreet-body">
-        <p>{{refreet.content}}</p>
+        <p class="refreet-body-text">{{refreet.content}}</p>
+        <span v-if="refreet.refreet" class="refreet-refreet-container">This freet contains a refreet.</span>
       </div>
       <div class="refreet-footer">
-        <span> Likes: {{refreet.likes.length}} </span>
-        <span v-if="refreet.refreet" class="refreet-refreet-container">This freet contains a refreet.</span>
         <a href="javascript:;" @click="getRefreet"> View This Freet </a>
         <span v-if="refreet.edited" class="edited-text">Edited</span>
       </div>
@@ -22,12 +21,14 @@
 
 <script>
 import {eventBus} from "../main";
+import variables from '../variables.scss';
 
 export default {
   name: "Refreet",
-  props: ["refreet"],
+  props: ["user", "refreet"],
   data() {
     return {
+      variables,
     };
   },
   methods: {
@@ -38,15 +39,15 @@ export default {
 };
 </script>
 
-<style lang='scss'>
+<style lang='scss' scoped>
 @import '../variables.scss';
 
 .refreet-container {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: $light-red;
-  border: 7.5px solid $light-red;
+  background: var(--refreet-color);
+  border: 7.5px solid var(--refreet-color);
   border-radius: 20px;
   width: 90%;
   margin: 10px;
@@ -66,6 +67,9 @@ export default {
 }
 
 .refreet-header {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
   height: 20px;
 }
 
@@ -76,10 +80,21 @@ export default {
   color: white;
 }
 
-
 .refreet-body {
   background: white;
   min-height: 60px;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.refreet-body-text {
+  display: flex;
+  justify-content: flex-start;
+  width: 90%;
+  margin: 0px;
+  padding: 0px;
+  font-weight: bold;
+  color: black;
 }
 
 .refreet-footer {
