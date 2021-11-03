@@ -3,8 +3,10 @@
     <header>
       <Navbar :user="user" />
     </header>
-    <CreateAccount v-if="showCreateAccount"/>
-    <Login v-if="showLogin" />
+    <div v-if='user' id="welcome"> 
+      <p id='welcomeMessage'>Welcome, {{this.user.username}}. </p>
+    </div>
+    <Signup v-else/>
     <router-view 
       :user="user"
       :key="$route.fullPath"
@@ -15,13 +17,12 @@
 <script>
 import { eventBus } from './main';
 import Navbar from './components/Navbar.vue';
-import Login from "./components/Login.vue";
-import CreateAccount from "./components/CreateAccount.vue";
+import Signup from "./components/Signup.vue";
 import axios from "axios";
 
 export default {
   name: "app",
-  components: { Navbar, Login, CreateAccount },
+  components: { Navbar, Signup, },
   data() {
     return {
       loggedIn: false,
