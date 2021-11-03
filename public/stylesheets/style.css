@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Fjalla+One&family=Major+Mono+Display&family=Manuale&family=Open+Sans&family=Playfair+Display:wght@800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rowdies&display=swap');
+
+:root {
+    --white: #e8dbc5;
+    --black: #3f292b;
+    --purple: #9d44b5;
+    --red: #f45b69;
+    --light-red: #f88c95;
+    --light-blue: #0affed;
+    --grey: #E5E5E5;
+    --white: #FFFFFF;
+
+    --xs: 18px;
+    --s: 24px;
+    --m: 36px;
+    --l: 48px;
+}
+
+button {
+    border-radius: 10px;
+    font-family: 'Rowdies', Courier, monospace;
+    font-size: var(--s);
+    color: var(--white);
+    background-color: var(--light-blue);
+    border: none;
+    margin: 5px;
+    padding: 7px;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+::placeholder {
+    color: var(--purple);
+    opacity: 0.5;
+}

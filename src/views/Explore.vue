@@ -32,8 +32,6 @@ export default {
     max-width: 100%;
     width: 100vw;
     height: 98vh;
-    /* padding: var(--m) var(--m); */
-    /* margin: auto; */
     overflow: hidden;
 }
 

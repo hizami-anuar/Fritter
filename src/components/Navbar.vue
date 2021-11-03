@@ -1,55 +1,47 @@
 <template>
   <nav class="NavBar-main">
-    <img alt="Fritter logo" src="../assets/navlogo.png" class="logo">
-    <div class="">
-        <h1 class="NavBar-title"> Fritter </h1>
+    <div class="NavBar-section">
+      <!--- <img alt="Fritter logo" src="../assets/navlogo.png" class="logo"> --->
+      <router-link to="/"> <h1 class="NavBar-title"> Fritter </h1> </router-link>
+      <router-link to="/" tag="img" :src="require('@/assets/home.svg')" class="NavBar-icon"></router-link>
+      <router-link to="/explore" tag="img" :src="require('@/assets/explore.svg')" class="NavBar-icon"></router-link>
+      <!--- <router-link to="/profile" v-if="user">Profile</router-link> --->
     </div>
-
-    <router-link to="/">Home</router-link> |
-    <router-link to="/explore">Explore</router-link>
-    <router-link to="/profile" v-if="user">Profile</router-link>
-
-    <div>
-      <input type="text" placeholder="Search by author name..." v-model="author"/>
-      <input
-          type="submit"
+    
+    <div class="NavBar-section NavBar-middle">
+      <input type="text" placeholder="Search by author name..." v-model="author" class="NavBar-searchBar"/>
+      <input class="NavBar-icon NavBar-searchBarButton"
+          type="image"
           value="Search"
+          :src="require('@/assets/search.svg')"
           :disabled="!author"
           v-on:click.prevent="search"
       />
     </div>
     
-    <div class="all-menu-items">
+    <div class="NavBar-section NavBar-end">
         <div v-if="user" class="NavBar-profile-container">Welcome {{user.username}}</div>
-        <input
-            type="submit"
-            value="Login"
-            v-if="!user"
-            v-on:click.prevent="loginPage"
-        />
-        <input
-            type="submit"
-            v-if="!user"
-            value="Create New Account"
-            v-on:click.prevent="createAccountPage"
-        />
-        <input
-            type="submit"
-            v-if="user"
-            value="Logout"
-            v-on:click.prevent="logout"
-        />
+
+        <CreatePost :user='user' v-if="user">
+          <img class="NavBar-icon" src="../assets/create.svg">
+        </CreatePost>
+
+        <button v-if="!user" v-on:click="loginPage"> Login </button>
+        <button v-if="!user" v-on:click="createAccountPage"> Create New Account </button>
+        <button v-if="user"  v-on:click="logout"> Logout </button>
       </div>
   </nav>
 </template>
 
 <script>
+import CreatePost from './CreatePost.vue';
 import axios from "axios";
 import {eventBus} from "../main";
 
 export default {
   name: "Navbar",
   props: ["user"],
+  components: { CreatePost },
   data() {
     return {
       author: ""
@@ -103,23 +95,13 @@ export default {
 };
 </script>
 
-<style lang='scss'>
-@import url('https://fonts.googleapis.com/css2?family=Fjalla+One&family=Major+Mono+Display&family=Manuale&family=Open+Sans&family=Playfair+Display:wght@800&display=swap');
-@import '../variables.scss';
-
-#app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    color: #2c3e50;
-  }
-
+<style>
   .logo {
     width: 50px;
   }
 
   nav {
-    background-color: lightgray;
+    background-color: var(--red);
     display: flex;
     align-items: center;
     width: calc(100% - 20px);
@@ -127,115 +109,104 @@ export default {
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 200;
+    z-index: 100;
   }
 
   nav a {
-    font-weight: bold;
-    color: #2c3e50;
-    margin: 10px;
+    text-decoration: none;
   }
 
-  nav a.router-link-exact-active {
-    color: #18b56edb;
+  .NavBar-icon {
+    height: 40px;
+    width: 40px;
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(234deg) brightness(107%) contrast(102%);
+    margin: 0 10px;
   }
 
-  #welcome {
+  .NavBar-icon:hover {
+    cursor: pointer;
+  }
+
+  .NavBar-icon.router-link-exact-active {
+    filter: invert(80%) sepia(71%) saturate(1171%) hue-rotate(109deg) brightness(100%) contrast(100%);
+  }
+
+  .NavBar-main {
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    padding: 5px;
     margin: 0;
+    background-color: var(--red);
+    height: auto;
+    width: 100;
+    top: 0;
+    z-index: 1;
+    justify-content: space-between;
+    justify-items: center;
+    flex-direction: row;
   }
 
-  #welcomeMessage {
-    margin: 0 20px;
+  .NavBar-title {
+    /* color: rgb(73, 73, 73); */
+    color: white;
+    font-size: 30px;
+    margin: 0px;
+    padding: 8px;
+    font-family: 'Playfair Display', sans-serif;
   }
 
-  .hspacer {
-    margin-left: auto;
-    margin-right: auto;
+  .NavBar-profile-container {
+    font-family: 'Rowdies', Courier, monospace;
+    font-size: var(--s);
+    color: var(--white);
+    text-align: center;
+    margin: 0 0 0 auto;
+    padding: 8px;
   }
 
-  .vspacer {
-    height: 100px;
+  .logout-button {
+    margin-top: 10px;
+    margin-right: 10px;
+  }
+
+  .NavBar-searchBar {
+    border-color: none;
+    border-style: solid;
+    border-color: white;
+    font-family: 'Rowdies', Courier, monospace;
+    font-size: 12pt;
+    border-radius: 10px;
+    height: 30px;
+    width: 250px;
+    margin-left: 40px;
+  }
+
+  .NavBar-searchBar:focus {
+    outline: none;
+  }
+
+  .NavBar-searchBarButton {
+    width: 30px;
+    height: 30px;
+    margin: 0 10px;
+  }
+
+  .NavBar-searchBarButton:disabled {
+    cursor: auto;
+    filter: invert(80%) sepia(52%) saturate(6428%) hue-rotate(313deg) brightness(170%) contrast(95%);
+  }
+
+  .NavBar-section {
     width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
   }
 
-.NavBar-container {
-  position: relative;
-  max-width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-}
+  .NavBar-middle {
+    justify-content: center;
+  }
 
-.NavBar-main {
-  display: flex;
-  padding: 10px;
-  margin: 0;
-  background-color: $red;
-  height: auto;
-  width: 100;
-  top: 0;
-  z-index: 1;
-  justify-content: space-between;
-  justify-items: center;
-  flex-direction: row;
-}
-
-.NavBar-title-container {
-  /* color: rgb(73, 73, 73); */
-  height: auto;
-  /* background-color: rgba(255, 255, 255, 0.5); */
-  border-radius: 0px 0px 10px 10px;
-  text-align: center;
-  margin-left: 32px;
-  /* border-color: black; */
-  z-index: 1;
-}
-.NavBar-title {
-  /* color: rgb(73, 73, 73); */
-  color: white;
-  font-size: 30px;
-  margin: 0px;
-  padding: 8px;
-  font-family: 'Playfair Display', sans-serif;
-}
-
-.NavBar-profile-container {
-  text-align: center;
-  margin: auto;
-  padding: 8px;
-}
-
-.logout-button {
-  margin-top: 10px;
-  margin-right: 10px;
-}
-
-.all-menu-items {
-  display: flex;
-  padding: 10px;
-  margin: 0;
-  background-color: rgba(255, 255, 255, 0.0);
-  height: auto;
-  top: 0;
-  z-index: 1;
-  justify-content: flex-end;
-  align-content: center;
-  flex-direction: row;
-}
-  
-.menu-item {
-  padding: 8px;
-  margin: 5px 24px 0px 0px;
-
-  color: white;
-  opacity: 1;
-  text-decoration: none;
-  font-family: 'Fira Sans', sans-serif;
-  font-weight: 200;
-  letter-spacing: 1px;
-  font-size: 15px;
-}
+  .NavBar-end {
+    justify-content: flex-end;
+  }
 </style>

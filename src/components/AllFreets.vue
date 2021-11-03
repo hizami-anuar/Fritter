@@ -96,7 +96,6 @@ export default {
       this.getSingleFreet(data.id);
     })
     eventBus.$on('show-all-freets', () => {
-      this.$router.push({ name: 'Freets' }).catch(()=>{});
       this.getFreets();
     })
     eventBus.$on('show-following', (data) => {
