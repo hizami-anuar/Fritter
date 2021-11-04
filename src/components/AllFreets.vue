@@ -60,7 +60,13 @@
       </div>
 
       <div class="freet-scroll-container">
-          <Freet v-for="freet of allFreets" v-bind:key="freet.freetID" :freet="freet" :user="user" :complex="true"></Freet>
+          <Freet 
+            v-for="freet of allFreets" 
+            v-bind:key="freet.freetID" 
+            :freet="freet" 
+            :user="user" 
+            :complex="true">
+          </Freet>
       </div>
 
     </div>

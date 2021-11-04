@@ -40,7 +40,7 @@
       <div class="children-left-bar"></div>
       <div class="children-display">
         <RefreetChain 
-          v-for="refreet of freet.children"
+          v-for="refreet of freet.children.filter((child) => child != 'deleted')"
           :key="refreet.id"
           :freet="refreet" 
           :user="user">

@@ -49,7 +49,7 @@ export default {
   background: var(--refreet-color);
   border: 7.5px solid var(--refreet-color);
   border-radius: 20px;
-  width: 90%;
+  width: 100%;
   margin: 10px;
   overflow: hidden;
 }

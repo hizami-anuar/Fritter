@@ -48,6 +48,9 @@ class Freet {
    */
   static getChildren(freetID) {
     let freet = this.findOneWithAuthor(freetID);
+    if (freet == undefined) {
+      return "deleted";
+    }
     freet.children = [];
     for (let refreet of freet.refreetedBy) {
       freet.children.push(Freet.getChildren(refreet));
