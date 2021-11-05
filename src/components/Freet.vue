@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="freet-container" :style="{'--freet-color': user && freet && user.userID===freet.userID ? variables.purple : variables.red, 'freet-width': complex ? '500px': '100%' }">
+    <div class="freet-container" :style="{'--freet-color': user && freet && user.userID===freet.userID ? (type=='complex' ? variables.purple : variables.lightPurple) : (type=='complex' ? variables.red : variables.lightRed), '--freet-width': type == 'refreet' ? '100%' : '500px'}">
       <div v-if="freet != 'deleted'" class="freet-header">
         <span class="freet-author-text"> @{{freet.author}}:</span>
-        <span v-if="complex">
+        <span v-if="type == 'complex'">
           <button @click="follow" v-if="this.user && !isFollowing()">Follow</button>
           <button @click="unfollow" v-if="this.user && isFollowing()">Unfollow</button>
         </span>
@@ -11,12 +11,12 @@
       <div class="freet-body">
         <p v-if="freet=='deleted'">This refreeted freet was deleted.</p>
         <p v-else class="freet-body-text">{{freet.content}}</p>
-        <div v-if="complex" class="refreet-container">
+        <div v-if="type == 'complex'" class="refreet-container">
           <Freet
             v-if="freet.refreet"
             :freet="freet.refreet" 
             :user="user" 
-            :complex="false">
+            :type="'refreet'">
           </Freet>
           <button v-on:click="getRefreetChain">Get Refreet Chain</button>
         
@@ -33,23 +33,28 @@
               <div v-if="this.refreetError">{{this.refreetError}}</div>
           </div>
         </div>
+        <div v-else-if="type=='refreet' && freet.refreet" class="refreet-container">
+          This freet contains a refreet.
+        </div>
       </div>
 
       <div v-if="freet != 'deleted'" class="freet-footer">
-        <div v-if="complex">
-          <img class="logo" v-if='this.user && !liked()' v-on:click="like" src="../assets/empty-heart.svg"/>
-          <img class="logo" v-else-if='this.user && liked()' v-on:click="unlike" src="../assets/filled-heart.svg"/>
-          <span v-if="likeError"> {{this.likeError}} </span>
-          <span> {{freet.likes.length}} </span>
+        <template v-if="type == 'complex'">
+          <span>
+            <img class="logo" v-if='this.user && !liked()' v-on:click="like" src="../assets/empty-heart.svg"/>
+            <img class="logo" v-else-if='this.user && liked()' v-on:click="unlike" src="../assets/filled-heart.svg"/>
+            <span v-if="likeError"> {{this.likeError}} </span>
+            <span> {{freet.likes.length}} </span>
+          </span>
           <img class="logo" v-if="user.userID===freet.userID" v-on:click="editing=true" src="../assets/edit.svg" /> &nbsp;
           <img class="logo" v-if="user.userID===freet.userID" v-on:click="deleteFreet" src="../assets/trash.svg" /> &nbsp;
           <img class="logo" v-on:click="refreeting=true" v-if="user.userID" src="../assets/refreet.svg" />
           <span> Freet ID {{freet.freetID}} </span>
-          <span v-if="freet.edited" class="edited-text">Edited</span>
-        </div>
-        <div v-else>
+        </template>
+        <template v-else>
           <a href="javascript:;" @click="getRefreet"> View This Freet </a>
-        </div>
+        </template>
+        <span v-if="freet.edited" class="edited-text">Edited</span>
       </div>
     </div>
   </div>
@@ -63,11 +68,11 @@ import variables from '../variables.scss';
 export default {
   name: "Freet",
   components: { },
-  props: ["freet", "user", "complex"],
+  props: ["freet", "user", "type"],
   created: function () {},
   methods: {
     getRefreet: function() {
-      eventBus.$emit('show-single-freet', {id: this.refreet.freetID});
+      eventBus.$emit('show-single-freet', {id: this.freet.freetID});
     },
     deleteFreet: function () {
       if (confirm('Are you sure you want to delete freet?')) {
@@ -213,7 +218,6 @@ export default {
 }
 
 .edited-text {
-  width: 100%;
   text-align: right;
   font-weight: bold;
 }
@@ -264,7 +268,9 @@ export default {
 }
 
 .freet-footer {
-
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
 }
 
 .logo {

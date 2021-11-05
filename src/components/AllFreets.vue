@@ -65,7 +65,7 @@
             v-bind:key="freet.freetID" 
             :freet="freet" 
             :user="user" 
-            :complex="true">
+            :type="'complex'">
           </Freet>
       </div>
 

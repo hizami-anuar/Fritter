@@ -1,41 +1,10 @@
 <template>
   <div>
-    <div class="freet-container" :style="{'--freet-color': user.userID===freet.userID ? variables.purple : variables.red }">
-      <div class="freet-header">
-        <span class="freet-author-text"> @{{freet.author}}:</span>
-        <button @click="follow" v-if="this.user && !isFollowing()">Follow</button>
-        <button @click="unfollow" v-if="this.user && isFollowing()">Unfollow</button>
-      </div>
-      <div class="freet-body">
-        <p class="freet-body-text">{{freet.content}}</p>
-        <button v-on:click="getRefreetChain">Get Refreet Chain</button>
-      
-        <div v-if="editing" class="editing-container">
-            <input type="text" v-model="newContent" placeholder="New content here">
-            <button @click="save" :disabled="!newContent">Save</button>
-            <button @click="cancel">Cancel</button>
-            <div v-if="this.editFreetError">{{this.editFreetError}}</div>
-        </div>
-        <div v-if="refreeting" class="refreeting-container">
-            <input type="text" v-model="refreetContent" placeholder="New content here">
-            <button @click="submitRefreet" :disabled="!refreetContent">Save</button>
-            <button @click="cancelRefreet">Cancel</button>
-            <div v-if="this.refreetError">{{this.refreetError}}</div>
-        </div>
-      </div>
-
-      <div class="freet-footer">
-        <img class="logo" v-if='this.user && !liked()' v-on:click="like" src="../assets/empty-heart.svg"/>
-        <img class="logo" v-else-if='this.user && liked()' v-on:click="unlike" src="../assets/filled-heart.svg"/>
-        <span v-if="likeError"> {{this.likeError}} </span>
-        <span> {{freet.likes.length}} </span>
-        <img class="logo" v-if="user.userID===freet.userID" v-on:click="editing=true" src="../assets/edit.svg" /> &nbsp;
-        <img class="logo" v-if="user.userID===freet.userID" v-on:click="deleteFreet" src="../assets/trash.svg" /> &nbsp;
-        <img class="logo" v-on:click="refreeting=true" v-if="user.userID" src="../assets/refreet.svg" />
-        <span> Freet ID {{freet.freetID}} </span>
-        <span v-if="freet.edited" class="edited-text">Edited</span>
-      </div>
-    </div>
+    <Freet
+      :freet="freet" 
+      :user="user" 
+      :type="'chain'">
+    </Freet>
     <div class="children-container">
       <div class="children-left-bar"></div>
       <div class="children-display">
@@ -53,11 +22,12 @@
 <script>
 import axios from "axios";
 import {eventBus} from "../main";
+import Freet from './Freet';
 import variables from '../variables.scss';
 
 export default {
   name: "RefreetChain",
-  components: {},
+  components: { Freet },
   props: ["freet", "user"],
   created: function () {},
   methods: {

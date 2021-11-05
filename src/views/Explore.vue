@@ -44,7 +44,7 @@ export default {
 
     padding: 0px 24px;
 
-    background: #fafafa;
+    background: white;
 
     display: flex;
     flex-direction: column;
