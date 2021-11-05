@@ -40,6 +40,7 @@ export default {
       this.refreshSession();
     })
     eventBus.$on("user-login-success", (response) => {
+      console.log(response);
       this.loggedIn = true;
       this.user = {
         username: response.username,

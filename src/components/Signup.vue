@@ -62,8 +62,8 @@ export default {
     createAccount() {
         axios
         .post('/api/users/', {'username': this.username, 'password': this.password})
-        .then((result) => {
-          eventBus.$emit('user-login-success', result);
+        .then((response) => {
+          eventBus.$emit('user-login-success', response.data);
           this.deactivate();
         })
         .catch(error => {
@@ -79,7 +79,7 @@ export default {
         axios
         .post('/api/session/', {'username': this.username, 'password': this.password})
         .then((response) => {
-            eventBus.$emit('user-login-success', response);
+            eventBus.$emit('user-login-success', response.data);
             this.deactivate();
         })
         .catch(error => {
