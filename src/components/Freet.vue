@@ -1,15 +1,21 @@
 <template>
   <div>
-    <div class="freet-container" :style="{'--freet-color': user && freet && user.userID===freet.userID ? (type=='complex' ? variables.purple : variables.lightPurple) : (type=='complex' ? variables.red : variables.lightRed), '--freet-width': type == 'refreet' ? '100%' : '500px'}">
+    <div class="freet-container" :style="{'--freet-color': user && freet && user.userID===freet.userID ? (type!='refreet' ? variables.purple : variables.lightPurple) : (type!='refreet' ? variables.red : variables.lightRed), '--freet-width': type == 'refreet' ? '100%' : '500px'}">
       <div v-if="freet != 'deleted'" class="freet-header">
         <span class="freet-author-text"> @{{freet.author}}:</span>
         <span v-if="type == 'complex'">
-          <button @click="follow" v-if="this.user && !isFollowing()">Follow</button>
-          <button @click="unfollow" v-if="this.user && isFollowing()">Unfollow</button>
+          <button v-on:click="follow" v-if="this.user && !isFollowing()">Follow</button>
+          <button v-on:click="unfollow" v-if="this.user && isFollowing()">Unfollow</button>
         </span>
       </div>
       <div class="freet-body">
         <p v-if="freet=='deleted'">This refreeted freet was deleted.</p>
+        <div v-else-if="type == 'editing'">
+          <input type="text" v-model="newContent" placeholder="New content here">
+          <button v-on:click="save" :disabled="!newContent">Save</button>
+          <button v-on:click="cancel">Cancel</button>
+          <div v-if="this.editFreetError">{{this.editFreetError}}</div>
+        </div>
         <p v-else class="freet-body-text">{{freet.content}}</p>
         <div v-if="type == 'complex'" class="refreet-container">
           <Freet
@@ -21,16 +27,23 @@
           <button v-on:click="getRefreetChain">Get Refreet Chain</button>
         
           <div v-if="editing" class="editing-container">
-              <input type="text" v-model="newContent" placeholder="New content here">
-              <button @click="save" :disabled="!newContent">Save</button>
-              <button @click="cancel">Cancel</button>
-              <div v-if="this.editFreetError">{{this.editFreetError}}</div>
+            <section>
+              <Freet
+                :freet="freet"
+                :user="user"
+                :type="'editing'"
+                :hide="hideChild">
+              </Freet>
+            </section>
           </div>
+
           <div v-if="refreeting" class="refreeting-container">
+            <section>
               <input type="text" v-model="refreetContent" placeholder="New content here">
               <button @click="submitRefreet" :disabled="!refreetContent">Save</button>
               <button @click="cancelRefreet">Cancel</button>
               <div v-if="this.refreetError">{{this.refreetError}}</div>
+            </section>
           </div>
         </div>
         <div v-else-if="type=='refreet' && freet.refreet" class="refreet-container">
@@ -68,8 +81,10 @@ import variables from '../variables.scss';
 export default {
   name: "Freet",
   components: { },
-  props: ["freet", "user", "type"],
-  created: function () {},
+  props: ["freet", "user", "type", "hide"],
+  created: function () {
+    this.newContent = this.freet.content;
+  },
   methods: {
     getRefreet: function() {
       eventBus.$emit('show-single-freet', {id: this.freet.freetID});
@@ -84,19 +99,23 @@ export default {
     save: function () {
       axios.put("/api/freets/" + encodeURIComponent(this.freet.freetID), {
         id: this.freet.freetID,
-        content: this.newContent
+        content: this.newContent,
       }).then(() => {
-        this.editing = false;
+        this.hide();
         this.newContent = "";
         this.editFreetError = "";
         eventBus.$emit("refresh-freets");
       }).catch((error) => {
+        this.newContent = this.freet.content;
         this.editFreetError = error.response.data.error;
       })
     },
     cancel: function() {
-        this.editing = false;
-        this.editFreetError = "";
+      this.hide();
+      this.editFreetError = "";
+    },
+    hideChild: function() {
+      this.editing = false;
     },
     like: function() {
         axios.patch("/api/freets/" + encodeURIComponent(this.freet.freetID) + "/likes", {
@@ -182,17 +201,48 @@ export default {
 @import '../variables.scss';
 
 .editing-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: auto;
   border: 1px solid black;
   margin-top: 3px;
   padding: 3px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  background: rgba(100, 100, 100, 0.5);
 }
 
 .refreeting-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: auto;
   border: 1px solid black;
   margin-top: 3px;
   padding: 3px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  background: rgba(100, 100, 100, 0.5);
+}
+
+section {
+  border: 1px solid;  
+  background: white;
+  outline: solid white;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  align-items: center;
+  padding: 25px;
 }
 
 .freet-container {
