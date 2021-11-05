@@ -47,7 +47,7 @@ class Freet {
    * @return {Freet} - refreet children chain
    */
   static getChildren(freetID) {
-    let freet = this.findOneWithAuthor(freetID);
+    let freet = this.findOne(freetID, complex=true);
     if (freet == undefined) {
       return "deleted";
     }
@@ -66,7 +66,7 @@ class Freet {
   static parseRefreet(freet) {
     let result = Object.assign({}, freet);
     if (freet.refreet) {
-      result.refreet = Freet.findOneWithAuthor(freet.refreet) || "deleted";
+      result.refreet = Freet.findOne(freet.refreet, complex=true) || "deleted";
     } else {
       freet.refreet = undefined;
     }
@@ -75,91 +75,64 @@ class Freet {
   }
 
   /**
-   * Given a Freet, return a copy with its author
-   * @param {Freet} freet
-   * @returns {Freet}
-   */
-  static parseAuthor(freet) {
-    let result = Object.assign({}, freet);
-    result.author = Users.findOneUserID(freet.userID).username;
-    return result;
-  }
-
-  /**
    * Find a Freet by ID.
    * 
    * @param {number} freetID - The unique ID of the Freet to find
+   * @param {boolean} complex - Whether the freet should include author and parsed refreet (defaults to false)
    * @return {Freet | undefined} - the found Freet with above ID
    */
-   static findOne(freetID) {
-    let freet = data.filter(freet => freet.freetID === freetID)[0];
-    return freet;
-  }
-
-  /**
-   * Find a Freet by ID and return with Author.
-   * 
-   * @param {number} freetID - The unique ID of the Freet to find
-   * @return {Freet | undefined} - the found Freet with above ID including refreet and author
-   */
-  static findOneWithAuthor(freetID) {
-    let freet = Freet.findOne(freetID);
-    if (freet === undefined) {
+   static findOne(freetID, complex=false) {
+    const freet = data.filter(freet => freet.freetID === freetID)[0];
+    if (complex) {
+      return this.parseRefreet(freet)
+    } else {
       return freet;
     }
-    return this.parseRefreet(freet);
   }
 
   /**
    * Find all Freets by user ID 
    * 
    * @param {number} userID - The userID of the user whose freets to find
+   * @param {boolean} complex - Whether the freet should include author and parsed refreet (defaults to false)
    * @return {Freet[]} - an array of all the Freets written by a user
    */
-   static findAllByUserID(userID) {
-    return data.filter(freet => freet.userID === userID);
-  }
-
-  /** Find all Freets by user ID and return with Author
-   * 
-   * @param {number} userID - The userID of the user whose freets to find
-   * @return {Freet[]} - an array of all the Freets written by a user including refreet and author
-   */
-   static findAllByUserIDWithAuthor(userID) {
-    return Freet.findAllByUserID(userID).map((freet) => this.parseRefreet(freet));
+   static findAllByUserID(userID, complex=false) {
+    const freets = data.filter(freet => freet.userID === userID);
+    if (complex) {
+      return freets.map((freet) => this.parseRefreet(freet));
+    } else {
+      return freets;
+    }
   }
 
   /**
    * Find all Freets by list of user IDs.
    * 
    * @param {number[]} userIDs - The userIDs of the users whose freets to find
+   * @param {boolean} complex - Whether the freet should include author and parsed refreet (defaults to false)
    * @return {Freet[]} - an array of all the Freets written by these users
    */
-   static findAllByManyUserIDs(userIDs) {
-    return data.filter(freet => userIDs.includes(freet.userID));
+   static findAllByManyUserIDs(userIDs, complex=false) {
+    const freets = data.filter(freet => userIDs.includes(freet.userID));;
+    if (complex) {
+      return freets.map((freet) => this.parseRefreet(freet));
+    } else {
+      return freets;
+    }
    }
 
-  /** Find all Freets by list of user IDs and parse out refreet and author
-   * 
-   * @param {number} userID - The userID of the user whose freets to find
-   * @return {Freet[]} - an array of all the Freets written by these users including refreet and author
-   */
-   static findAllByManyUserIDsWithAuthor(userIDs) {
-    return Freet.findAllByManyUserIDs(userIDs).map((freet) => this.parseRefreet(freet));
-  }
-
   /**
+   * @param {boolean} complex - Whether the freet should include author and parsed refreet (defaults to false)
    * @return {Freet[]} an array of all of the Freets
    */
-  static findAll() {
-    return data;
-  }
-
-  /**
-   * @return {Freet[]} an array of all of the Freets including refreet and author
-   */
-   static findAllWithAuthor() {
-    return Freet.findAll().map((freet) => this.parseRefreet(freet));
+  static findAll(complex=false) {
+    const freets = data;
+    if (complex) {
+      return freets.map((freet) => this.parseRefreet(freet));
+    } else {
+      return freets;
+    }
   }
 
   /**

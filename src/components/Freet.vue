@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="freet-container" :style="{'--freet-color': user && freet && user.userID===freet.userID ? (type!='refreet' ? variables.purple : variables.lightPurple) : (type!='refreet' ? variables.red : variables.lightRed), '--freet-width': type == 'refreet' ? '100%' : '500px'}">
+    <div class="freet-container" :style="{'--freet-color': freetColor, '--freet-width': freetWidth}">
       <div v-if="freet != 'deleted'" class="freet-header">
         <span class="freet-author-text"> @{{freet.author}}:</span>
         <span v-if="type == 'complex'">
@@ -59,8 +59,8 @@
             <span v-if="likeError"> {{this.likeError}} </span>
             <span> {{freet.likes.length}} </span>
           </span>
-          <img class="logo" v-if="user.userID===freet.userID" v-on:click="editing=true" src="../assets/edit.svg" /> &nbsp;
-          <img class="logo" v-if="user.userID===freet.userID" v-on:click="deleteFreet" src="../assets/trash.svg" /> &nbsp;
+          <img class="logo" v-if="ownFreet" v-on:click="editing=true" src="../assets/edit.svg" /> &nbsp;
+          <img class="logo" v-if="ownFreet" v-on:click="deleteFreet" src="../assets/trash.svg" /> &nbsp;
           <img class="logo" v-on:click="refreeting=true" v-if="user.userID" src="../assets/refreet.svg" />
           <span> Freet ID {{freet.freetID}} </span>
         </template>
@@ -82,6 +82,51 @@ export default {
   name: "Freet",
   components: { },
   props: ["freet", "user", "type", "hide"],
+  data() {
+    return {
+      variables: variables,
+      editing: false,
+      editFreetError: "",
+      newContent: "",
+      likeError: "",
+      refreeting: false,
+      refreetError: "",
+      refreetContent: "",
+      ownFreetTypeColors: {
+        'complex': variables.purple,
+        'refreet': variables.lightPurple,
+        'chain': variables.purple,
+        'editing': variables.purple,
+      },
+      otherFreetTypeColors: {
+        'complex': variables.red,
+        'refreet': variables.lightRed,
+        'chain': variables.red,
+        'editing': variables.red,
+      },
+      freetTypeWidths: {
+        'complex': '500px',
+        'refreet': '100%',
+        'chain': '500px',
+        'editing': '500px',
+      }
+    }
+  },
+  computed: {
+    ownFreet() {
+      return this.user && this.freet && this.user.userID===this.freet.userID;
+    },
+    freetColor() {
+      if (this.ownFreet) {
+        return this.ownFreetTypeColors[this.type]
+      } else {
+        return this.otherFreetTypeColors[this.type];
+      }
+    },
+    freetWidth() {
+      return this.freetTypeWidths[this.type];
+    }
+  },
   created: function () {
     this.newContent = this.freet.content;
   },
@@ -181,19 +226,6 @@ export default {
       eventBus.$emit('show-refreet-chain', { id: this.freet.freetID })
     }
   },
-  data() {
-    return {
-      variables: variables,
-      editing: false,
-      editFreetError: "",
-      newContent: "",
-      likeError: "",
-      refreeting: false,
-      refreetError: "",
-      refreetContent: "",
-      freetColor: "$red", 
-    }
-  }
 }
 </script>
 

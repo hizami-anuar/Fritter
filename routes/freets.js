@@ -17,16 +17,16 @@ const router = express.Router();
 router.get('/', (req, res) => {
   let freets = [];
   if (req.query.id) {
-    freets = Freets.findOneWithAuthor(req.query.id);
+    freets = Freets.findOne(req.query.id, complex=true);
   } else if (req.query.author) {
     const author = Users.findOneUsername(req.query.author);
     if (author) {
-      freets = Freets.findAllByUserIDWithAuthor(author.userID);
+      freets = Freets.findAllByUserID(author.userID, complex=true);
     } else {
       freets = [];
     }
   } else {
-    freets = Freets.findAllWithAuthor();
+    freets = Freets.findAll(complex=true);
   }
   const sort = req.query.sort;
   freets = freets.reverse();
@@ -82,7 +82,7 @@ router.get('/:id',
   ],
   (req, res) => {
     const id = parseInt(req.params.id, 10);
-    result = [Freets.findOneWithAuthor(id, req.body.content)];
+    result = [Freets.findOne(id, complex=true)];
     res.status(200).json(result).end();
   });
 
@@ -149,7 +149,7 @@ router.delete('/:id?',
   const user = Users.findOneUserID(req.session.userID);
   console.log("user")
   console.log(user)
-  const freets = Freets.findAllByManyUserIDsWithAuthor(user.following);
+  const freets = Freets.findAllByManyUserIDs(user.following, complex=true);
   res.status(200).json(freets).end();
 });
 
