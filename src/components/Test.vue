@@ -27,12 +27,14 @@ export default {
 <style lang="scss" scoped>
 @import '../variables.scss';
 
-.NavBar-searchBar:not(:focus) + .dropdown-menu {
-    display: none;
+.NavBar-searchBar:focus + .dropdown-menu {
+    opacity: 1;
 }
 
 .dropdown-menu {
     position: relative;
+    transition: opacity 0.5s ease-out;
+    opacity: 0;
 }
 
 .sub-menu {
