@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: 'services',
+  name: 'SearchDropdown',
   props: ['users'],
   data () {
     return {

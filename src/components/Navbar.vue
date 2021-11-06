@@ -11,7 +11,7 @@
     <div class="NavBar-section NavBar-middle">
       <div class=NavBar-dropdown>
         <input type="text" placeholder="Search by author name..." v-model="author" class="NavBar-searchBar"/>
-        <Test :users="users" />
+        <Test :users="filteredUsers" />
       </div>
       <input class="NavBar-icon NavBar-searchBarButton"
           type="image"
@@ -38,7 +38,7 @@
 
 <script>
 import CreatePost from './CreatePost.vue';
-import Test from'./Test.vue';
+import Test from'./SearchDropdown.vue';
 import axios from "axios";
 import {eventBus} from "../main";
 
@@ -46,10 +46,16 @@ export default {
   name: "Navbar",
   props: ["user"],
   components: { CreatePost, Test },
+  computed: {
+    filteredUsers () {
+      let filtered = this.users.filter((user) => user.startsWith(this.author))
+      return filtered.slice(0, 5);
+    }
+  },
   data() {
     return {
       author: "",
-      users: undefined,
+      users: [],
     };
   },
   mounted: function() {
