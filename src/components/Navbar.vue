@@ -9,14 +9,17 @@
     </div>
     
     <div class="NavBar-section NavBar-middle">
-      <input type="text" placeholder="Search by author name..." v-model="author" class="NavBar-searchBar"/>
+      <div class=NavBar-dropdown>
+        <input type="text" placeholder="Search by author name..." v-model="author" class="NavBar-searchBar"/>
+        <Test :users="users" />
+      </div>
       <input class="NavBar-icon NavBar-searchBarButton"
           type="image"
           value="Search"
           :src="require('@/assets/search.svg')"
           :disabled="!author"
           v-on:click.prevent="search"
-      />
+      />   
     </div>
     
     <div class="NavBar-section NavBar-end">
@@ -35,20 +38,34 @@
 
 <script>
 import CreatePost from './CreatePost.vue';
+import Test from'./Test.vue';
 import axios from "axios";
 import {eventBus} from "../main";
 
 export default {
   name: "Navbar",
   props: ["user"],
-  components: { CreatePost },
+  components: { CreatePost, Test },
   data() {
     return {
-      author: ""
+      author: "",
+      users: undefined,
     };
   },
-  created: function() {},
+  mounted: function() {
+    this.getUsers();
+  },
   methods: {
+    getUsers () {
+      axios.get("/api/users")
+      .then((response) => {
+        this.users = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+    },
+
     search () {
       if (this.author.includes(" ")) {
         alert('Search term cannot contain whitespaces')

@@ -8,6 +8,14 @@ const validateThat = require('./middleware');
 const router = express.Router();
 
 /**
+ * Get all usernames.
+ */
+router.get('/', (req, res) => {
+  const users = Users.findAll().map((user) => user.username);
+  res.status(200).json(users).end();
+})
+
+/**
  * Create a user.
  * 
  * @name POST /api/users
