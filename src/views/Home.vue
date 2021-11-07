@@ -1,14 +1,13 @@
 <template>
   <div class="home">
-    <img class="banner" alt="Welcome by Hooty" src="../assets/hooty-welcome.jpg"/>
     <div v-if="user">
-      <main>
-        <h1>Hoot hoot! Go to <router-link to="/explore">Explore</router-link> to see other users' freets, or create your own!</h1>
-      </main>
+      <FreetViewer
+        :freets="freets"
+      />
     </div>
     <div v-else>
-      
       <h1>Hoot hoot! Welcome to Fritter! Create an account or login to begin!</h1>
+      <button v-if="!user" v-on:click="createAccountPage"> Create New Account </button>
     </div>
   </div>
 </template>
@@ -17,12 +16,15 @@
 import axios from 'axios';
 import { eventBus } from "../main";
 
+import FreetViewer from "../components/FreetViewer.vue"
+
 export default {
   name: 'Home',
   props: ['user'],
+  components: {FreetViewer},
   mounted: function () {
     this.getFreets(); // when the page is initially loaded, get the list of freets by all authors to display.
-
+    console.log("HERE", this.freets, this.user);
     /**
      * User just finished editing a Freet. Get Freets again.
      */
@@ -35,16 +37,17 @@ export default {
       freets: [], // list of freets to display in the feed
     }
   },
-  components: {
-  },
   methods: {
+    createAccountPage() {
+      eventBus.$emit("show-create-account");
+    },
     getFreets() {
       if (this.user) {
         axios
-          .get('/api/followers/feed')
+          .get('/api/freets/' + this.user.username + '/following')
           .then(response => {
-            this.freets = response.data.freets.slice().reverse()
-            // Sort by likes? response.data.freets.sort((freetA, freetB) => freetB.upvoteCount - freetA.upvoteCount);
+            console.log(response);
+            this.freets = response.data.slice().reverse();
           })
       }
     }

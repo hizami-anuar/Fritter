@@ -147,8 +147,6 @@ router.delete('/:id?',
   validateThat.userIsLoggedIn,
 ], (req, res) => {
   const user = Users.findOneUserID(req.session.userID);
-  console.log("user")
-  console.log(user)
   const freets = Freets.findAllByManyUserIDs(user.following, complex=true);
   res.status(200).json(freets).end();
 });

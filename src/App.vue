@@ -3,10 +3,11 @@
     <header>
       <Navbar :user="user" />
     </header>
+
     <div v-if='user' id="welcome"> 
-      <p id='welcomeMessage'>Welcome, {{this.user.username}}. </p>
     </div>
     <Signup v-else/>
+    
     <router-view 
       :user="user"
       :key="$route.fullPath"
@@ -100,6 +101,6 @@ export default {
 }
 
 body{
- padding-top:100px;
+ padding-top: 56px;
 }
 </style>

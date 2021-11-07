@@ -30,7 +30,6 @@
         </CreatePost>
 
         <button v-if="!user" v-on:click="loginPage"> Login </button>
-        <button v-if="!user" v-on:click="createAccountPage"> Create New Account </button>
         <button v-if="user"  v-on:click="logout"> Logout </button>
       </div>
   </nav>
@@ -98,9 +97,6 @@ export default {
     },
     loginPage() {
         eventBus.$emit("show-login")
-    },
-    createAccountPage() {
-        eventBus.$emit("show-create-account")
     },
     logout() {
       axios.delete("/api/session")

@@ -52,7 +52,7 @@
       </div>
 
       <div v-if="freet != 'deleted'" class="freet-footer">
-        <template v-if="type == 'complex'">
+        <template v-if="type=='complex'">
           <span>
             <img class="logo" v-if='this.user && !liked()' v-on:click="like" src="../assets/empty-heart.svg"/>
             <img class="logo" v-else-if='this.user && liked()' v-on:click="unlike" src="../assets/filled-heart.svg"/>
@@ -61,7 +61,7 @@
           </span>
           <img class="logo" v-if="ownFreet" v-on:click="editing=true" src="../assets/edit.svg" /> &nbsp;
           <img class="logo" v-if="ownFreet" v-on:click="deleteFreet" src="../assets/trash.svg" /> &nbsp;
-          <img class="logo" v-on:click="refreeting=true" v-if="user.userID" src="../assets/refreet.svg" />
+          <img class="logo" v-on:click="refreeting=true" v-if="this.user" src="../assets/refreet.svg" />
           <span> Freet ID {{freet.freetID}} </span>
         </template>
         <template v-else>
@@ -141,7 +141,7 @@ export default {
         })
       }
     },
-    save: function () {
+    save () {
       axios.put("/api/freets/" + encodeURIComponent(this.freet.freetID), {
         id: this.freet.freetID,
         content: this.newContent,
@@ -155,14 +155,14 @@ export default {
         this.editFreetError = error.response.data.error;
       })
     },
-    cancel: function() {
+    cancel () {
       this.hide();
       this.editFreetError = "";
     },
-    hideChild: function() {
+    hideChild () {
       this.editing = false;
     },
-    like: function() {
+    like () {
         axios.patch("/api/freets/" + encodeURIComponent(this.freet.freetID) + "/likes", {
         id: this.freet.freetID,
         userID: this.user.userID
@@ -173,7 +173,7 @@ export default {
         this.likeError = error.response.data.error;
       })
     },
-    unlike: function() {
+    unlike () {
         axios.delete("/api/freets/" + encodeURIComponent(this.freet.freetID) + "/likes", {
         id: this.freet.freetID,
         userID: this.user.userID

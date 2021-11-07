@@ -2,9 +2,6 @@
   <div class="App-container">
     <div class="Main-container">
       <AllFreets :user="user"></AllFreets>
-      <!-- <div v-else>
-        <Navbar :user="user"></Navbar>  
-      </div> -->
     </div>
   </div>
 </template>

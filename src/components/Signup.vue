@@ -2,6 +2,9 @@
   <div>
     <div class="signup" v-if="isSigningIn">
       <section>
+        <div v-if="tab===0">
+        </div>
+        
         <h4>Username:</h4><input type="text" id="username" placeholder="username" v-model="username">
         <h4>Password:</h4><input :type=visibility placeholder="password" id="password" v-model="password">
         <img alt="password toggle" src="../assets/eye.png" class="eye" v-on:click.prevent="toggleVisibility">
@@ -37,6 +40,7 @@ export default {
   name: 'Signup',
   data() {
     return {
+      tab: 0,
       isSigningIn: false,
       cancelDest: null,
       username: '',
@@ -50,6 +54,14 @@ export default {
      * Force login popup and redirect close button to Home
      */
     eventBus.$on('show-login', (cancelDest=null) => {
+       this.cancelDest = cancelDest;
+       this.activate();
+    });
+
+    /** 
+     * Force create account popup and redirect close button to Home
+     */
+    eventBus.$on('show-create-account', (cancelDest=null) => {
        this.cancelDest = cancelDest;
        this.activate();
     });

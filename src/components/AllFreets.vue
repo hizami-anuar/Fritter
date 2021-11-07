@@ -16,7 +16,6 @@
             {{this.freetFailMessage}}
         </div>
       </form>
-      <span v-else>You're welcome to browse Freets without an account, but please log in or create an account to post Freets of your own!</span>
 
       <hr/>
 
