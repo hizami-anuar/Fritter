@@ -1,9 +1,17 @@
 <template>
   <div class="home">
     <div v-if="user">
-      <FreetViewer
-        :freets="freets"
-      />
+      <FreetViewer 
+        :user="user" 
+        :freets="freets" 
+        :followEnabled="false" 
+        :noFreetsMessage="'Click on a Freet to view its Refreets!'">
+
+        <template v-slot:freetOptions>
+          <ActionBar />
+        </template>
+
+      </FreetViewer>
     </div>
     <div v-else>
       <h1>Hoot hoot! Welcome to Fritter! Create an account or login to begin!</h1>
@@ -17,14 +25,14 @@ import axios from 'axios';
 import { eventBus } from "../main";
 
 import FreetViewer from "../components/FreetViewer.vue"
+import ActionBar from "../components/ActionBar.vue"
 
 export default {
   name: 'Home',
   props: ['user'],
-  components: {FreetViewer},
+  components: { FreetViewer, ActionBar },
   mounted: function () {
     this.getFreets(); // when the page is initially loaded, get the list of freets by all authors to display.
-    console.log("HERE", this.freets, this.user);
     /**
      * User just finished editing a Freet. Get Freets again.
      */
@@ -46,7 +54,7 @@ export default {
         axios
           .get('/api/freets/' + this.user.username + '/following')
           .then(response => {
-            console.log(response);
+            console.log("RESPONSE", response);
             this.freets = response.data.slice().reverse();
           })
       }

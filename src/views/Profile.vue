@@ -1,5 +1,23 @@
 <template>
-  <div class="profile" v-if="freets !== null">
+  <div class="profile">
+    <FreetViewer 
+    :user="user" 
+    :freets="freets" 
+    :followEnabled="false"
+    :noFreetsMessage="'User has no Freets!'">
+      <template v-slot:header>
+        <div class="userInformation">
+          <div class="profileLetter">
+            {{user.username[0]}}
+          </div>
+          <div class="information">
+            <h1>@{{user.username}}</h1>
+            <h2>Follower Count: {{followingCount}}</h2>
+          </div>
+        </div>
+      </template>
+    </FreetViewer>
+    <!--  
     <div class="profileLabel">
       <h1>
         {{user.username===profileOwner ? `My` : `${profileOwner}'s`}} Profile
@@ -17,49 +35,8 @@
       />
     </div>
     <DeleteUser v-if="sameUser"/>
-    <table class="menuContainer"><tr class="menu">
-      <td
-        :class="{selected: display==='freets'}"
-        @click="display='freets'"
-        >History</td>
-      <td
-        :class="{selected: display==='following'}"
-        @click="display='following'"
-        >Following</td>
-      <td
-        :class="{selected: display==='followers'}"
-        @click="display='followers'"
-        >Followers</td>
-    </tr></table>
-    <div id="freetHistory" v-if="display==='freets'">
-      <h1>
-        {{user.username===profileOwner ? `My` : `${profileOwner}'s`}} Freets
-      </h1>
-    <div class="freet-scroll-container">
-      <Freet 
-        v-for="freet of freets" 
-        :key="freet.freetID" 
-        :freet="freet" 
-        :user="user">
-      </Freet>
-    </div>
-    </div>
-    <div id="listFollowing" v-if="display==='following'">
-      <h1>
-        {{user.username===profileOwner ? `My` : `${profileOwner}'s`}} Following
-      </h1>
-      <UserList 
-        v-bind:users='following'
-      /> 
-    </div>
-    <div id="listFollowers" v-if="display==='followers'">
-      <h1>
-        {{user.username===profileOwner ? `My` : `${profileOwner}'s`}} Followers
-      </h1>
-      <UserList 
-        v-bind:users='followers'
-      /> 
-    </div>
+    
+    -->
   </div>
 </template>
 
@@ -67,29 +44,21 @@
 import axios from 'axios';
 import { eventBus } from "../main";
 
-import UserInfo from '../components/UserInfo.vue';
-import DeleteUser from '../components/DeleteUser.vue';
-import UserList from '../components/UserList.vue';
-import Freet from '../components/Freet.vue';
+import FreetViewer from '../components/FreetViewer.vue';
 
 export default {
   name: 'Profile',
   props: ['user'],
   components: {
-      UserInfo,
-      DeleteUser,
-      UserList,
-      Freet,
+    FreetViewer
   },
   data: function () {
     return {
       sameUser: undefined,
-      followEnabled: undefined,
-      display: "freets",
-      freets: null,
+      freets: undefined,
       profileOwner: undefined,  // profile owner's username
-      following: null,
-      followers: null,
+      followingCount: undefined,
+      followEnabled: undefined
     }
   },
   mounted: function () {
@@ -103,14 +72,9 @@ export default {
     axios
       .get(`/api/users/${this.profileOwner}/followers`)
       .then(response => {
-        this.followers = response.data;
+        let followers = response.data;
+        this.followingCount = followers.length;
         this.followEnabled = this.user && !this.followers.includes(this.user.username);
-      });
-
-    axios
-      .get(`/api/users/${this.profileOwner}/following`)
-      .then(response => {
-        this.following = response.data;
       });
 
     this.getUserFreets().then((freets) => {
@@ -167,22 +131,40 @@ export default {
       this.freets = freets;
       return freets;
     },
-    /**
-     * Handle a username change
-     */
-    nameChange(newName) {
-      this.profileOwner = newName;
-      this.getUserFreets();
-    }
   },
 }
 </script>
 
 <style scoped>
-  .profile {
+  .userInformation {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    color: white;
+    width: 100%;
+    padding: 10px;
+    min-height: 200px;
+    background-color: var(--purple);
+    padding: 15px;
+  }
+
+  .information {
+    margin: 20px;
+    text-align: left;
+  }
+
+  .profileLetter {
+    font-size: 100px;
+    border-radius: 50%;
+    background-color: var(--red);
+    width: 200px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 5px 10px 5px;
+  }
+  h1 {
+    margin: 0;
   }
 
   .icon {
@@ -193,46 +175,5 @@ export default {
 
   .icon:hover {
     cursor: pointer;
-  }
-
-  .menu {
-    display: flex;
-    max-width: 420px;
-    width: 100%;
-    border: 1px solid black;
-    border-collapse: collapse;
-  }
-
-  .menuContainer {
-    margin: 40px 0 0 0;
-    max-width: 420px;
-    width: 100%;
-  }
-
-  td {
-    flex-basis: 140px;
-    flex-grow: 1;
-    border: 1px solid black;
-  }
-
-  .selected {
-    background-color: #18b56edb;
-  }
-
-  #profileContent {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 40px;
-  }
-
-  #freetHistory {
-    margin: 20px 0;
-    width: 100%;
-  }
-
-  .profileLabel {
-    display: flex;
-    align-items: center;
   }
 </style>

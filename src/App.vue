@@ -99,8 +99,4 @@ export default {
 #nav a.router-link-exact-active {
   color: #42b983;
 }
-
-body{
- padding-top: 56px;
-}
 </style>

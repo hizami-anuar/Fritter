@@ -1,20 +1,10 @@
 # Fritter
 💩
 
-### ReFreet Subsection
-- [ ] Detect if clicked Freet is root or part of branch
-- [ ] Generate Refreet subtree. If clicked Freet is root, generate first n layers. If clicked Freet is part of branch, just generate branch of subtree up to root
-  - [ ] Generate Show More buttons. Show More buttons truncate branch and display more Freets, indented all the way to the left
-- Display indented lines that show levels deep into Refreet tree
-- If no Freet clicked, show instructions that say: "Click on a Freet to show Refreet Conversation!"
-- BUG TESTING
-
-### Filter buttons
-- [ ] Create options to filter by person following, in home
-- [ ] Create options to filter by new, popular, and random in explore
+### Fix profile 
+- [ ] Put follow button on top right 
 
 ### Author dropdown 
-- [ ] Create autocomplete drop down when typing into search bar
 - [ ] Only allow enter when option clicked in dropdown
 
 ### User Dropdown
@@ -30,6 +20,7 @@
 - [ ] Make this obvious to user (ex. with label "suggested Freet")
 
 ### Styling Existing components
+- [ ] Create Freet looks different from rest of site
 - [ ] Universal color scheme/font
 - [ ] Style according to figma: https://www.figma.com/file/I9I3tVxeEKoeUli7jzRyCp/Untitled?node-id=0%3A1
 - [ ] Google icons for each user (letter of username)

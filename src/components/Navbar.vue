@@ -5,7 +5,7 @@
       <router-link to="/"> <h1 class="NavBar-title"> Fritter </h1> </router-link>
       <router-link to="/" tag="img" :src="require('@/assets/home.svg')" class="NavBar-icon"></router-link>
       <router-link to="/explore" tag="img" :src="require('@/assets/explore.svg')" class="NavBar-icon"></router-link>
-      <!--- <router-link to="/profile" v-if="user">Profile</router-link> --->
+      <router-link to="/profile" tag="img" :src="require('@/assets/profile.svg')" class="NavBar-icon" v-if="user">Profile</router-link>
     </div>
     
     <div class="NavBar-section NavBar-middle">
@@ -123,12 +123,11 @@ export default {
     background-color: var(--red);
     display: flex;
     align-items: center;
-    width: calc(100% - 20px);
+    width: 100vw;
     padding: 10px;
-    position: fixed;
+    box-sizing: border-box;
     left: 0;
     top: 0;
-    z-index: 100;
   }
 
   nav a {
@@ -158,7 +157,6 @@ export default {
     height: auto;
     width: 100;
     top: 0;
-    z-index: 1;
     justify-content: space-between;
     justify-items: center;
     flex-direction: row;

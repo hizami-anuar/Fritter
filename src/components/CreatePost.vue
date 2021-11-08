@@ -72,15 +72,28 @@ export default {
      * After a post event, the feed is back to the list of freets  all authors by default.
      */
     createFreet() {
-      let route = '/api/freets/';
-      if (this.parent !== null) route += this.parent.id;
-        
-      axios
-        .post(route, {content: this.content})
-        .then(async () => {
+      let route = '/api/freets';
+
+      if (this.parent !== null) {
+        axios
+        .post(route, 
+          {
+            content: this.content, 
+            refreet: this.parent.freetID
+          })
+        .then(() => {
           this.deactivate();
-          eventBus.$emit("show-all-freets");
-        });
+          eventBus.$emit('freet-action-finished');
+        })
+        route += this.parent.id;
+      } else {
+        axios
+          .post(route, {content: this.content})
+          .then(() => {
+            this.deactivate();
+            eventBus.$emit('freet-action-finished');
+          });
+      }
     },
     /**
      * Sets the refreet parent (or clears if no arguments given)

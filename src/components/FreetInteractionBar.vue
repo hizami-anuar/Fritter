@@ -1,13 +1,14 @@
 <template>
   <div class="FreetInteractionBar">
-    <div class="buttonBar" v-if='this.user.username===this.freet.author'>
-      <img class="logo" v-on:click="editFreet" src="../assets/edit.svg"/>
-      <img class="logo" v-on:click="deleteFreet" src="../assets/trash.svg"/>
+    <div class="buttonBar" v-if='user.username===freet.author'>
+      <img class="icon" v-on:click="editFreet" src="../assets/edit.svg"/>
+      <img class="icon" v-on:click="deleteFreet" src="../assets/trash.svg"/>
     </div>
     <div class="buttonBar" v-else>
-      <img v-if='user.liked && !user.liked.includes(freet.id)' class="logo" v-on:click="upvote" src="../assets/empty-heart.svg"/>
-      <img v-else-if='user.liked && user.liked.includes(freet.id)' class="logo" v-on:click="downvote" src="../assets/filled-heart.svg"/>
-      <img class="logo" v-on:click="refreet" src="../assets/refreet.svg"/>
+      <img v-if='user && !freet.likes.includes(user.userID)' class="icon" v-on:click="upvote" src="../assets/empty-heart.svg"/>
+      <img v-else-if='user && freet.likes.includes(user.userID)' class="icon" v-on:click="downvote" src="../assets/filled-heart.svg"/>
+      <div class="spacer"></div>
+      <img class="icon" v-on:click="refreet" src="../assets/refreet.svg"/>
     </div>
   </div>
 </template>
@@ -32,45 +33,51 @@ export default {
      * Delete the current freet and then refresh Explore view
      */
     deleteFreet () {
-      axios
-      .delete('/api/freets/' + this.freet.id)
-      .then(() => {
-        eventBus.emit('freet-action-finished');
-      })
+      if (confirm('Are you sure you want to delete this Freet?')) {
+        axios
+        .delete('/api/freets/' + encodeURIComponent(this.freet.freetID))
+        .then(() => {
+          eventBus.$emit('freet-action-finished');
+        })
+      }
     },
     /**
      * Change to editing mode so user can edit the text.
      */
     editFreet () {
-      eventBus.$emit('toggleEditing');
+      this.$emit('toggleEditing');
     },
     /**
      * Change editing mode to edit a refreet of this freet
      */
     refreet () {
-      eventBus.emit('start-refreet', this.freet);
+      eventBus.$emit('start-refreet', this.freet);
     },
     /**
      * Upvotes the freet and then updates likeCount.
      */
     upvote () {
       axios
-      .post('/api/users/liked?freetId=' + this.freet.id)
-      .then(() => {
-        eventBus.emit('freet-action-finished');
-        eventBus.emit('user-change-event', {mode:'ADD', param:'liked', value:this.freet.id});
-      })
+        .patch("/api/freets/" + encodeURIComponent(this.freet.freetID) + "/likes", {
+          id: this.freet.freetID,
+          userID: this.user.userID
+        })
+        .then(() => {
+          eventBus.$emit('freet-action-finished');
+        })
     },
     /**
      * Downvotes the freet and then updates likeCount.
      */
     downvote () {
       axios
-      .delete('/api/users/liked?freetId=' + this.freet.id)
-      .then(() => {
-        eventBus.emit('freet-action-finished');
-        eventBus.emit('user-change-event', {mode:'REMOVE', param:'liked', value:this.freet.id});
-      })
+        .delete("/api/freets/" + encodeURIComponent(this.freet.freetID) + "/likes", {
+          id: this.freet.freetID,
+          userID: this.user.userID
+        })
+        .then(() => {
+          eventBus.$emit('freet-action-finished');
+        })
     },
   },
 }
@@ -87,13 +94,14 @@ export default {
     display: flex;
     flex-direction: row;
   }
-  .logo {
-    width: 15px;
-    height: 15px;
+  .icon {
+    width: 20px;
+    height: 20px;
     margin: 0px 2px 0px 2px;
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(234deg) brightness(107%) contrast(102%);
   }
 
-  .logo:hover {
-    cursor: pointer;
+  .icon:hover {
+    filter: invert(80%) sepia(71%) saturate(1171%) hue-rotate(109deg) brightness(100%) contrast(100%);
   }
 </style>

@@ -5,9 +5,9 @@
     --white: #e8dbc5;
     --black: #3f292b;
     --purple: #9d44b5;
-    --red: #f45b69;
+    --red: #F45B69;
     --light-red: #f88c95;
-    --light-blue: #0affed;
+    --light-blue: #99FFF8;
     --grey: #E5E5E5;
     --white: #FFFFFF;
 
@@ -17,13 +17,18 @@
     --l: 48px;
 }
 
+body {
+    margin: 0;
+    font-family: 'Rowdies', Courier, monospace;
+}
+
 button {
     border-radius: 10px;
-    font-family: 'Rowdies', Courier, monospace;
+    font-weight: bold;
     font-size: var(--s);
-    color: var(--white);
-    background-color: var(--light-blue);
-    border: none;
+    color: var(--light-blue);
+    background-color: rgba(0,0,0,0);
+    border: solid 3px var(--light-blue);;
     margin: 5px;
     padding: 7px;
 }
@@ -32,7 +37,16 @@ button:hover {
     cursor: pointer;
 }
 
+.spacer {
+    width: 100%;
+    flex-grow: 100;
+}
+
 ::placeholder {
     color: var(--purple);
     opacity: 0.5;
+}
+
+.icon:hover {
+    cursor: pointer;
 }

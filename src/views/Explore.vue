@@ -1,26 +1,50 @@
 <template>
   <div class="App-container">
-    <div class="Main-container">
-      <AllFreets :user="user"></AllFreets>
-    </div>
+    <FreetViewer 
+      :user="user" 
+      :freets="freets" 
+      :followEnabled="true">
+      <template v-slot:freetOptions>
+        <ActionBar />
+      </template>
+    </FreetViewer>
   </div>
 </template>
 
 <script>
-import AllFreets from '../components/AllFreets.vue';
+import axios from 'axios';
+import { eventBus } from "../main";
 
+import FreetViewer from '../components/FreetViewer.vue';
+import ActionBar from '../components/ActionBar.vue';
 
 export default {
   name: "home",
   props: ["user"],
-  data() {
-    return {
-      loggedIn: false,
-      showLogin: false,
-      showCreateAccount: false,
-    };
+  components: { FreetViewer, ActionBar },
+  mounted: function () {
+    this.getFreets(); // when the page is initially loaded, get the list of freets by all authors to display.
+    /**
+     * User just finished editing a Freet. Get Freets again.
+     */
+    eventBus.$on('freet-action-finished', () => {
+      this.getFreets();
+    });
   },
-  components: { AllFreets },
+  data: function () {
+    return {
+      freets: [], // list of freets to display in the feed
+    }
+  },
+  methods: {
+    getFreets() {
+      axios
+        .get('/api/freets')
+        .then(response => {
+          this.freets = response.data.slice().reverse();
+        })
+    }
+  },
 }
 </script>
 
