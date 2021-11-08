@@ -1,8 +1,9 @@
 # Fritter
 💩
 
-### Fix profile 
+### Fix things 
 - [ ] Put follow button on top right 
+- [ ] Update refreets when freet updated
 
 ### Author dropdown 
 - [ ] Only allow enter when option clicked in dropdown
