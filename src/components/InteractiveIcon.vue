@@ -17,9 +17,6 @@ export default {
 @import '../variables.scss';
 
 .interactive-icon {
-  width: 20px;
-  height: 20px;
-  margin: 0px 2px 0px 2px;
   cursor: pointer;
 }
 

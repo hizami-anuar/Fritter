@@ -23,8 +23,8 @@ import axios from 'axios';
 import { eventBus } from "../main";
 
 import AllFreets from '../components/AllFreets.vue';
-//import FreetViewer from '../components/FreetViewer.vue';
-//import ActionBar from '../components/ActionBar.vue';
+// import FreetViewer from '../components/FreetViewer.vue';
+// import ActionBar from '../components/ActionBar.vue';
 
 export default {
   name: "Explore",

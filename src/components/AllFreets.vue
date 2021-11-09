@@ -2,18 +2,7 @@
   <div class="two-panel-container">
     <div class="first-column">
       <div class="sort-container">
-        <div class="sort-item" v-on:click="setSortNewest">
-          <img class="sort-icon" src="../assets/logo.png" />
-          <p class="sort-text">Newest</p>
-        </div>
-        <div class="sort-item" v-on:click="setSortPopular">
-          <img class="sort-icon" src="../assets/logo.png" />
-          <p class="sort-text">Popular</p>
-        </div>
-        <div class="sort-item" v-on:click="setSortRandom">
-          <img class="sort-icon" src="../assets/logo.png" />
-          <p class="sort-text">Random</p>
-        </div>
+        <SortBar />
       </div>
 
       <div class="freet-scroll-container">
@@ -46,11 +35,12 @@
 import axios from "axios";
 import Freet from "./Freet";
 import RefreetChain from "./RefreetChain";
-import {eventBus} from "../main";
+import SortBar from "./SortBar";
+import { eventBus } from "../main";
 
 export default {
   name: "freets",
-  components: { Freet, RefreetChain },
+  components: { Freet, RefreetChain, SortBar },
   props: ["user", "freets", "refreetChain"],
   data() {
     return {
@@ -58,7 +48,16 @@ export default {
         invalidFreet: false,
         freetFailMessage: "",
         sort: "newest",
+        eventListeners: [
+          {name: "sortFreets", func: this.setSort},
+        ],
     };
+  },
+  created() {
+    this.eventListeners.forEach((e) => eventBus.$on(e.name, e.func));
+  },
+  beforeDestroy: function() {
+    this.eventListeners.forEach((e) => eventBus.$off(e.name, e.func));
   },
   methods: {
     createNewFreet() {
@@ -73,6 +72,20 @@ export default {
         this.invalidFreet = true;
         this.freetFailMessage = error.response.data.error;
       })
+    },
+
+    setSort(sort) {
+      switch (sort) {
+        case "New":
+          this.setSortNewest();
+          break;
+        case "Likes":
+          this.setSortPopular();
+          break;
+        case "Random":
+          this.setSortRandom();
+          break;
+      }
     },
 
     setSortNewest() {
@@ -118,6 +131,7 @@ export default {
 }
 
 .freet-scroll-container {
+  padding-top: 20px;
   height: 80%;
   overflow-y: scroll;
 }
@@ -131,24 +145,7 @@ export default {
 .sort-container {
   display: flex;
   justify-content: space-around;
-  height: 20%;
-}
-
-.sort-item {
-  cursor: pointer;
-}
-
-.sort-icon {
-  width: auto;
-  height: calc(100% - 40px);
-}
-
-.sort-text {
-  margin: 0px;
-  padding: 0px;
-  font-size: 30px;
-  font-weight: bolder;
-  color: $red;
+  height: auto;
 }
 
 </style>

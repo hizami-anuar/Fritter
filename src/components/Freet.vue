@@ -2,11 +2,19 @@
   <div class="freet-container" :style="style">
     <div v-if="freet != 'deleted'" class="freet-header">
       <span class="freet-author-text"> @{{freet.author}}:</span>
-      <span>
-        <button v-on:click="getRefreetChain">Refreets</button>
-        <template v-if="type == 'complex'">
-          <button v-on:click="follow" v-if="this.user && !isFollowing()">Follow</button>
-          <button v-on:click="unfollow" v-if="this.user && isFollowing()">Unfollow</button>
+      <span class="interaction-container">
+        <button v-if="type=='complex' || type=='chain'" v-on:click="getRefreetChain">Refreets</button>
+        <template v-if="type=='complex'">
+          <InteractiveIcon v-if="user && !isFollowing"
+            :handler="follow"
+            :hovertext="'Follow'">   
+            <template v-slot:image><img class="icon interactive-icon" src="../assets/follow-empty.svg" /></template>
+          </InteractiveIcon>
+          <InteractiveIcon v-if="user && isFollowing"
+            :handler="unfollow"
+            :hovertext="'Unfollow'">   
+            <template v-slot:image><img class="icon interactive-icon" src="../assets/follow-filled.svg" /></template>
+          </InteractiveIcon>
         </template>
       </span>
     </div>
@@ -22,16 +30,18 @@
         @blur="submitEditedFreet($event)"
         @keydown.enter.exact.prevent="$event.target.blur()">
     </textarea>
-      <div v-if="type == 'complex'" class="refreet-container">
+      <div v-if="['complex', 'posting'].includes(type)" class="refreet-container">
         <Freet
           v-if="freet.refreet"
           :freet="freet.refreet" 
           :user="user" 
-          :type="'refreet'">
-        </Freet>
-
+          :type="'refreet'"/>
         <div v-if="refreeting" class="refreeting-container">
           <section>
+            <Freet
+              :freet="defaultRefreet"
+              :user="user"
+              :type="'posting'"/>
             <input type="text" v-model="refreetContent" placeholder="New content here">
             <button @click="submitRefreet" :disabled="!refreetContent">Save</button>
             <button @click="cancelRefreet">Cancel</button>
@@ -42,45 +52,45 @@
         <span v-if="freet.edited" class="edited-text">Edited</span>
       </div>
       <div v-else-if="type=='refreet' && freet.refreet" class="refreet-container">
-        This freet contains a refreet.
+        This freet is a refreet of another freet.
       </div>
     </div>
 
     <div v-if="freet != 'deleted'" class="freet-footer">
-      <template v-if="type=='complex' || type=='chain'">
+      <template v-if="type != 'refreet'">
         <span class="likes-container">
           <template v-if="user">
-            <InteractiveIcon v-if="liked()"
+            <InteractiveIcon v-if="liked"
               :handler="unlike"
               :hovertext="'Unlike'">   
-              <template v-slot:image><img class="interactive-icon" src="../assets/filled-heart.svg" /></template>
+              <template v-slot:image><img class="icon interactive-icon" src="../assets/filled-heart.svg" /></template>
             </InteractiveIcon>
             <InteractiveIcon v-else
               :handler="like"
               :hovertext="'Like'">   
-              <template v-slot:image><img class="interactive-icon" src="../assets/empty-heart.svg" /></template>
+              <template v-slot:image><img class="icon interactive-icon" src="../assets/empty-heart.svg" /></template>
             </InteractiveIcon>
           </template>
-          <img v-else class="logo" src="../assets/empty-heart.svg" />
-          <span> {{freet.likes.length}} </span>
+          <img v-else class="icon" src="../assets/empty-heart.svg" />
+          <p class="likes-text"> {{freet.likes.length}} </p>
         </span>
         <span class="interaction-container">
           <InteractiveIcon v-if="ownFreet"
             :handler="enableEdit"
             :hovertext="'Edit'">   
-            <template v-slot:image><img class="interactive-icon" src="../assets/edit.svg" /></template>
+            <template v-slot:image><img class="icon interactive-icon" src="../assets/edit.svg" /></template>
           </InteractiveIcon>
           <InteractiveIcon v-if="ownFreet"
             :handler="deleteFreet"
             :hovertext="'Delete'">   
-            <template v-slot:image><img class="interactive-icon" src="../assets/trash.svg" /></template>
+            <template v-slot:image><img class="icon interactive-icon" src="../assets/trash.svg" /></template>
+          </InteractiveIcon>
+          <InteractiveIcon v-if="user"
+            :handler="enableRefreet"
+            :hovertext="'Refreet'">   
+            <template v-slot:image><img class="icon interactive-icon" src="../assets/refreet.svg" /></template>
           </InteractiveIcon>
         </span>
-        <InteractiveIcon v-if="user"
-          :handler="enableRefreet"
-          :hovertext="'Refreet'">   
-          <template v-slot:image><img class="interactive-icon" src="../assets/refreet.svg" /></template>
-        </InteractiveIcon>
       </template>
     </div>
   </div>
@@ -110,19 +120,19 @@ export default {
         'complex': variables.purple,
         'refreet': variables.lightPurple,
         'chain': variables.purple,
-        'editing': variables.purple,
+        'posting': variables.purple,
       },
       otherFreetTypeColors: {
         'complex': variables.red,
         'refreet': variables.lightRed,
         'chain': variables.red,
-        'editing': variables.red,
+        'posting': variables.red,
       },
       freetTypeWidths: {
         'complex': '100%',
         'refreet': '100%',
         'chain': '100%',
-        'editing': '500px',
+        'posting': '500px',
       }
     }
   },
@@ -142,10 +152,29 @@ export default {
     },
     style () {
       return {'--freet-color': this.freetColor, '--freet-width': this.freetWidth}
-    }
+    },
+    defaultRefreet() {
+      return {
+        'content': "",
+        'author': this.user.username,
+        'edited': false,
+        'freetID': undefined,
+        'likes': [],
+        'refreet': this.freet,
+        'refreetedBy': [],
+        'userID': this.user.userID,
+      }
+    },
+    liked() {
+      return this.user && this.freet.likes.includes(this.user.userID);
+    },
+    isFollowing() {
+        return this.user && this.user.following.includes(this.freet.userID);
+    },
   },
   created: function () {
     this.message = this.freet.content;
+    this.editing = this.type=="posting";
   },
   methods: {
     onTextInput () {
@@ -214,9 +243,6 @@ export default {
         alert(this.likeError);
       })
     },
-    liked: function() {
-      return this.freet.likes.includes(this.user.userID);
-    },
     follow: function() {
       axios.patch("/api/users/" + encodeURIComponent(this.freet.userID) + "/following").then(() => {
         eventBus.$emit("refresh-freets");
@@ -232,9 +258,6 @@ export default {
       }).catch((error) => {
         console.log(error);
       })
-    },
-    isFollowing: function() {
-        return this.user && this.user.following.includes(this.freet.userID);
     },
     submitRefreet: function () {
       axios.post("/api/freets", {content: this.refreetContent, refreet: this.freet.freetID})
@@ -284,6 +307,8 @@ textarea:disabled {
 .likes-container {
   display: flex;
   flex-direction: row;
+  margin: 0px;
+  height: 20px;
 }
 
 .interaction-container {
@@ -335,7 +360,7 @@ section {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 90%;
+  width: 100%;
 }
 
 .edited-text {
@@ -391,13 +416,20 @@ section {
 .freet-footer {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   width: 100%;
+  margin: 10px;
 }
 
-.logo {
+.icon {
   width: 20px;
   height: 20px;
   margin: 0px 2px 0px 2px;
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(234deg) brightness(107%) contrast(102%);
+}
+
+.icon:hover {
+  filter: invert(80%) sepia(71%) saturate(1171%) hue-rotate(109deg) brightness(100%) contrast(100%);
 }
 
 button {
@@ -406,6 +438,14 @@ button {
   margin: 0;
   border-radius: 5px;
   padding: 0 5px;
+}
+
+p {
+  font-size: 20px;
+  color: white;
+  font-family: 'Rowdies', Courier, monospace;
+  text-decoration: none;
+  margin: 0px;
 }
 
 

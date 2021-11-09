@@ -14,11 +14,11 @@
         <SearchDropdown :users="filteredUsers" />
       </div>
       <input class="NavBar-icon NavBar-searchBarButton"
-          type="image"
-          value="Search"
-          :src="require('@/assets/search.svg')"
-          :disabled="!author"
-          v-on:click.prevent="search"
+        type="image"
+        value="Search"
+        :src="require('@/assets/search.svg')"
+        :disabled="!author"
+        v-on:click.prevent="search"
       />   
     </div>
     
