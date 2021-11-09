@@ -1,74 +1,102 @@
 <template>
-  <div>
-    <div class="freet-container" :style="{'--freet-color': freetColor, '--freet-width': freetWidth}">
-      <div v-if="freet != 'deleted'" class="freet-header">
-        <span class="freet-author-text"> @{{freet.author}}:</span>
-        <span v-if="type == 'complex'">
+  <div class="freet-container" :style="style">
+    <div v-if="freet != 'deleted'" class="freet-header">
+      <span class="freet-author-text"> @{{freet.author}}:</span>
+      <span>
+        <button v-on:click="getRefreetChain">Refreets</button>
+        <template v-if="type == 'complex'">
           <button v-on:click="follow" v-if="this.user && !isFollowing()">Follow</button>
           <button v-on:click="unfollow" v-if="this.user && isFollowing()">Unfollow</button>
-        </span>
-      </div>
-      <div class="freet-body">
-        <p v-if="freet=='deleted'">This refreeted freet was deleted.</p>
-        <div v-else-if="type == 'editing'">
-          <input type="text" v-model="newContent" placeholder="New content here">
-          <button v-on:click="save" :disabled="!newContent">Save</button>
-          <button v-on:click="cancel">Cancel</button>
-          <div v-if="this.editFreetError">{{this.editFreetError}}</div>
-        </div>
-        <p v-else class="freet-body-text">{{freet.content}}</p>
-        <div v-if="type == 'complex'" class="refreet-container">
-          <Freet
-            v-if="freet.refreet"
-            :freet="freet.refreet" 
-            :user="user" 
-            :type="'refreet'">
-          </Freet>
-          <button v-on:click="getRefreetChain">Get Refreet Chain</button>
-        
-          <div v-if="editing" class="editing-container">
-            <section>
-              <Freet
-                :freet="freet"
-                :user="user"
-                :type="'editing'"
-                :hide="hideChild">
-              </Freet>
-            </section>
-          </div>
-
-          <div v-if="refreeting" class="refreeting-container">
-            <section>
-              <input type="text" v-model="refreetContent" placeholder="New content here">
-              <button @click="submitRefreet" :disabled="!refreetContent">Save</button>
-              <button @click="cancelRefreet">Cancel</button>
-              <div v-if="this.refreetError">{{this.refreetError}}</div>
-            </section>
-          </div>
-        </div>
-        <div v-else-if="type=='refreet' && freet.refreet" class="refreet-container">
-          This freet contains a refreet.
-        </div>
-      </div>
-
-      <div v-if="freet != 'deleted'" class="freet-footer">
-        <template v-if="type=='complex'">
-          <span>
-            <img class="logo" v-if='this.user && !liked()' v-on:click="like" src="../assets/empty-heart.svg"/>
-            <img class="logo" v-else-if='this.user && liked()' v-on:click="unlike" src="../assets/filled-heart.svg"/>
-            <span v-if="likeError"> {{this.likeError}} </span>
-            <span> {{freet.likes.length}} </span>
-          </span>
-          <img class="logo" v-if="ownFreet" v-on:click="editing=true" src="../assets/edit.svg" /> &nbsp;
-          <img class="logo" v-if="ownFreet" v-on:click="deleteFreet" src="../assets/trash.svg" /> &nbsp;
-          <img class="logo" v-on:click="refreeting=true" v-if="this.user" src="../assets/refreet.svg" />
-          <span> Freet ID {{freet.freetID}} </span>
         </template>
-        <template v-else>
-          <a href="javascript:;" @click="getRefreet"> View This Freet </a>
-        </template>
+      </span>
+    </div>
+    <div class="freet-body">
+      <p v-if="freet=='deleted'">This refreeted freet was deleted.</p>
+      <textarea 
+        class="postComment"
+        maxlength="140"
+        v-model = 'message'
+        :id="`postComment-${this.freet.id}`"
+        :disabled = '!this.editing'
+        @input='onTextInput'
+        @blur="submitEditedFreet($event)"
+        @keydown.enter.exact.prevent="$event.target.blur()">
+    </textarea>
+      <div v-if="type == 'complex'" class="refreet-container">
+        <Freet
+          v-if="freet.refreet"
+          :freet="freet.refreet" 
+          :user="user" 
+          :type="'refreet'">
+        </Freet>
+
+        <div v-if="refreeting" class="refreeting-container">
+          <section>
+            <input type="text" v-model="refreetContent" placeholder="New content here">
+            <button @click="submitRefreet" :disabled="!refreetContent">Save</button>
+            <button @click="cancelRefreet">Cancel</button>
+            <div v-if="this.refreetError">{{this.refreetError}}</div>
+          </section>
+        </div>
+
         <span v-if="freet.edited" class="edited-text">Edited</span>
       </div>
+      <div v-else-if="type=='refreet' && freet.refreet" class="refreet-container">
+        This freet contains a refreet.
+      </div>
+    </div>
+
+    <div v-if="freet != 'deleted'" class="freet-footer">
+      <template v-if="type=='complex'">
+        <span class="likes-container">
+          <template v-if="ownFreet">
+            <InteractiveIcon
+              v-if="liked()"
+              :handler="unlike"
+              :hovertext="'Unlike'">   
+              <template v-slot:image>
+                <img class="logo" src="../assets/filled-heart.svg" />
+              </template>
+            </InteractiveIcon>
+            <InteractiveIcon
+              v-else
+              :handler="like"
+              :hovertext="'Like'">   
+              <template v-slot:image>
+                <img class="logo" src="../assets/empty-heart.svg" />
+              </template>
+            </InteractiveIcon>
+          </template>
+          <span v-if="likeError"> {{this.likeError}} </span>
+          <span> {{freet.likes.length}} </span>
+        </span>
+        <span class="interaction-container">
+          <InteractiveIcon
+            v-if="ownFreet"
+            :handler="enableEdit"
+            :hovertext="'Edit'">   
+            <template v-slot:image>
+              <img class="logo" src="../assets/edit.svg" />
+            </template>
+          </InteractiveIcon>
+          <InteractiveIcon
+            v-if="ownFreet"
+            :handler="deleteFreet"
+            :hovertext="'Delete'">   
+            <template v-slot:image>
+              <img class="logo" src="../assets/trash.svg" />
+            </template>
+          </InteractiveIcon>
+        </span>
+        <InteractiveIcon
+          v-if="user"
+          :handler="enableRefreet"
+          :hovertext="'Refreet'">   
+          <template v-slot:image>
+            <img class="logo" src="../assets/refreet.svg" />
+          </template>
+        </InteractiveIcon>
+      </template>
     </div>
   </div>
 </template>
@@ -76,18 +104,19 @@
 <script>
 import axios from "axios";
 import {eventBus} from "../main";
-import variables from '../variables.scss';
+import variables from "../variables.scss";
+import InteractiveIcon from "./InteractiveIcon";
 
 export default {
   name: "Freet",
-  components: { },
+  components: { InteractiveIcon },
   props: ["freet", "user", "type", "hide"],
   data() {
     return {
       variables: variables,
       editing: false,
       editFreetError: "",
-      newContent: "",
+      message: "",
       likeError: "",
       refreeting: false,
       refreetError: "",
@@ -105,9 +134,9 @@ export default {
         'editing': variables.red,
       },
       freetTypeWidths: {
-        'complex': '500px',
+        'complex': '100%',
         'refreet': '100%',
-        'chain': '500px',
+        'chain': '100%',
         'editing': '500px',
       }
     }
@@ -125,33 +154,50 @@ export default {
     },
     freetWidth() {
       return this.freetTypeWidths[this.type];
+    },
+    style () {
+      return {'--freet-color': this.freetColor, '--freet-width': this.freetWidth}
     }
   },
   created: function () {
-    this.newContent = this.freet.content;
+    this.message = this.freet.content;
   },
   methods: {
-    getRefreet: function() {
-      eventBus.$emit('show-single-freet', {id: this.freet.freetID});
+    onTextInput () {
+      // textarea scaling code from https://stackoverflow.com/questions/454202/creating-a-textarea-with-auto-resize
+      const box = document.getElementById(`postComment-${this.freet.id}`);
+      this.setPostContentHeight(0);
+      this.$nextTick(() => 
+        this.setPostContentHeight(box.scrollHeight)
+      );
     },
-    deleteFreet: function () {
+
+    enableEdit() {
+      this.editing = true;
+    },
+    enableRefreet() {
+      this.refreeting = true;
+    },
+    getRefreet() {
+      eventBus.$emit('show-single-freet', this.freet.freetID);
+    },
+    deleteFreet() {
       if (confirm('Are you sure you want to delete freet?')) {
         axios.delete("/api/freets/" + encodeURIComponent(this.freet.freetID)).then(() => {
           eventBus.$emit("refresh-freets");
         })
       }
     },
-    save () {
+    submitEditedFreet() {
+      this.editing = false;
       axios.put("/api/freets/" + encodeURIComponent(this.freet.freetID), {
         id: this.freet.freetID,
-        content: this.newContent,
+        content: this.message,
       }).then(() => {
-        this.hide();
-        this.newContent = "";
         this.editFreetError = "";
         eventBus.$emit("refresh-freets");
       }).catch((error) => {
-        this.newContent = this.freet.content;
+        this.message = this.freet.content;
         this.editFreetError = error.response.data.error;
       })
     },
@@ -223,7 +269,7 @@ export default {
         this.refreetError = "";
     },
     getRefreetChain: function() {
-      eventBus.$emit('show-refreet-chain', { id: this.freet.freetID })
+      eventBus.$emit('show-refreet-chain', this.freet.freetID);
     }
   },
 }
@@ -232,21 +278,33 @@ export default {
 <style lang="scss" scoped>
 @import '../variables.scss';
 
-.editing-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: auto;
-  border: 1px solid black;
-  margin-top: 3px;
-  padding: 3px;
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 2;
-  width: 100%;
+textarea {
+  background: white;
+  color: blueviolet;
+  text-align: left;
+  width: 90%;
   height: 100%;
-  background: rgba(100, 100, 100, 0.5);
+  outline: none;
+  border: none;
+  resize: none;
+  overflow: hidden;
+  font-family: 'Rowdies', Courier, monospace;
+  font-size: var(--xs);
+}
+
+textarea:disabled {
+  color: black;
+  outline: none;
+}
+
+.likes-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.interaction-container {
+  display: flex;
+  flex-direction: row;
 }
 
 .refreeting-container {
@@ -282,7 +340,7 @@ section {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  width: var(--freet-width);
+  width: calc(var(--freet-width) - 2 * 7.5px);
   border: 7.5px solid var(--freet-color);
   border-radius: 20px;
   margin-top: 5px;
@@ -308,6 +366,7 @@ section {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  height: 35px;
 }
 
 .freet-author-icon {
@@ -335,8 +394,7 @@ section {
   background: white;
   min-height: 60px;
   width: 100%;
-  padding: 10px 0 0 0;
-  border-radius: 10px;
+  padding: 10px;
 }
 
 .freet-body-text {
@@ -356,9 +414,19 @@ section {
 }
 
 .logo {
-    width: 15px;
-    height: 15px;
-    margin: 0px 2px 0px 2px;
-    cursor: pointer;
-  }
+  width: 20px;
+  height: 20px;
+  margin: 0px 2px 0px 2px;
+  cursor: pointer;
+}
+
+button {
+  font-size: 20px;
+  height: 28px;
+  margin: 0;
+  border-radius: 5px;
+  padding: 0 5px;
+}
+
+
 </style>

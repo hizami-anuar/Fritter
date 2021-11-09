@@ -3,15 +3,15 @@
     <div class="NavBar-section">
       <!--- <img alt="Fritter logo" src="../assets/navlogo.png" class="logo"> --->
       <router-link to="/"> <h1 class="NavBar-title"> Fritter </h1> </router-link>
-      <router-link to="/" tag="img" :src="require('@/assets/home.svg')" class="NavBar-icon"></router-link>
-      <router-link to="/explore" tag="img" :src="require('@/assets/explore.svg')" class="NavBar-icon"></router-link>
-      <router-link to="/profile" tag="img" :src="require('@/assets/profile.svg')" class="NavBar-icon" v-if="user">Profile</router-link>
+      <router-link exact-path :to="{ name: 'Home' }" tag="img" :src="require('@/assets/home.svg')" class="NavBar-icon"></router-link>
+      <router-link exact-path :to="{ name: 'Explore' }" tag="img" :src="require('@/assets/explore.svg')" class="NavBar-icon"></router-link>
+      <router-link exact-path :to="{ name: 'Profile' }" tag="img" :src="require('@/assets/profile.svg')" class="NavBar-icon" v-if="user">Profile</router-link>
     </div>
     
     <div class="NavBar-section NavBar-middle">
       <div class=NavBar-dropdown>
         <input type="text" placeholder="Search by author name..." v-model="author" class="NavBar-searchBar"/>
-        <Test :users="filteredUsers" />
+        <SearchDropdown :users="filteredUsers" />
       </div>
       <input class="NavBar-icon NavBar-searchBarButton"
           type="image"
@@ -37,14 +37,14 @@
 
 <script>
 import CreatePost from './CreatePost.vue';
-import Test from'./SearchDropdown.vue';
+import SearchDropdown from'./SearchDropdown.vue';
 import axios from "axios";
 import {eventBus} from "../main";
 
 export default {
   name: "Navbar",
   props: ["user"],
-  components: { CreatePost, Test },
+  components: { CreatePost, SearchDropdown },
   computed: {
     filteredUsers () {
       let filtered = this.users.filter((user) => user.startsWith(this.author))

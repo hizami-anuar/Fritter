@@ -37,7 +37,7 @@ export default {
         axios
         .delete('/api/freets/' + encodeURIComponent(this.freet.freetID))
         .then(() => {
-          eventBus.$emit('freet-action-finished');
+          eventBus.$emit('refresh-freets');
         })
       }
     },
@@ -63,7 +63,7 @@ export default {
           userID: this.user.userID
         })
         .then(() => {
-          eventBus.$emit('freet-action-finished');
+          eventBus.$emit('refresh-freets');
         })
     },
     /**
@@ -76,7 +76,7 @@ export default {
           userID: this.user.userID
         })
         .then(() => {
-          eventBus.$emit('freet-action-finished');
+          eventBus.$emit('refresh-freets');
         })
     },
   },

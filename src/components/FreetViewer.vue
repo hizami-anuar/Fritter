@@ -60,8 +60,8 @@ export default {
     eventBus.$on('change-sort', () => {
       this.toggleSort();
     });
-    eventBus.$on('show-refreet-chain', (data) => {
-      this.showRefreets(data.id);
+    eventBus.$on('show-refreet-chain', (id) => {
+      this.showRefreets(id);
     });
     eventBus.$on("sortFreets", option => this.sortFreets(option));
   },
@@ -131,7 +131,7 @@ export default {
     },
 
     showAllFreets() {
-      eventBus.$emit('freet-action-finished');
+      eventBus.$emit('refresh-freets');
     },
 
     showFollowing() {

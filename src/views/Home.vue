@@ -1,17 +1,10 @@
 <template>
   <div class="home">
     <div v-if="user">
-      <FreetViewer 
-        :user="user" 
-        :freets="freets" 
-        :followEnabled="false" 
-        :noFreetsMessage="'Click on a Freet to view its Refreets!'">
-
-        <template v-slot:freetOptions>
-          <ActionBar />
-        </template>
-
-      </FreetViewer>
+      <AllFreets
+        :freets="freets"
+        :user="user"
+        :onlyFollowing="false" />
     </div>
     <div v-else>
       <h1>Hoot hoot! Welcome to Fritter! Create an account or login to begin!</h1>
@@ -23,39 +16,43 @@
 <script>
 import axios from 'axios';
 import { eventBus } from "../main";
-
-import FreetViewer from "../components/FreetViewer.vue"
-import ActionBar from "../components/ActionBar.vue"
+import AllFreets from "../components/AllFreets";
 
 export default {
   name: 'Home',
   props: ['user'],
-  components: { FreetViewer, ActionBar },
-  mounted: function () {
-    this.getFreets(); // when the page is initially loaded, get the list of freets by all authors to display.
-    /**
-     * User just finished editing a Freet. Get Freets again.
-     */
-    eventBus.$on('freet-action-finished', () => {
+  components: { AllFreets },
+  mounted() {
+    this.refreshFreets(); 
+    eventBus.$on('refresh-freets', () => {
       this.getFreets();
     });
   },
-  data: function () {
+  data() {
     return {
-      freets: [], // list of freets to display in the feed
+      freets: [],
+      sort: 'newest',
     }
   },
   methods: {
     createAccountPage() {
       eventBus.$emit("show-create-account");
     },
+    refreshFreets() {
+      let q = undefined;
+      if (this.$route) {
+        q = this.$route.query;
+      }
+      this.sort = q.sort || 'newest';
+      this.getFreets();
+    },
     getFreets() {
       if (this.user) {
         axios
-          .get('/api/freets/' + this.user.username + '/following')
+          .get(`/api/freets/?following=true&sort=${this.sort}`)
           .then(response => {
             console.log("RESPONSE", response);
-            this.freets = response.data.slice().reverse();
+            this.freets = response.data;
           })
       }
     }

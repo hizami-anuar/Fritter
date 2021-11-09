@@ -1,5 +1,11 @@
 <template>
   <div class="App-container">
+    <AllFreets 
+      :freets="freets" 
+      :user="user" 
+      :refreetChain="refreetChain"  
+    />
+    <!--
     <FreetViewer 
       :user="user" 
       :freets="freets" 
@@ -8,6 +14,7 @@
         <ActionBar />
       </template>
     </FreetViewer>
+    -->
   </div>
 </template>
 
@@ -15,35 +22,115 @@
 import axios from 'axios';
 import { eventBus } from "../main";
 
-import FreetViewer from '../components/FreetViewer.vue';
-import ActionBar from '../components/ActionBar.vue';
+import AllFreets from '../components/AllFreets.vue';
+//import FreetViewer from '../components/FreetViewer.vue';
+//import ActionBar from '../components/ActionBar.vue';
 
 export default {
   name: "home",
   props: ["user"],
-  components: { FreetViewer, ActionBar },
-  mounted: function () {
-    this.getFreets(); // when the page is initially loaded, get the list of freets by all authors to display.
-    /**
-     * User just finished editing a Freet. Get Freets again.
-     */
-    eventBus.$on('freet-action-finished', () => {
-      this.getFreets();
-    });
-  },
+  components: { AllFreets /*FreetViewer, ActionBar*/ },
   data: function () {
     return {
-      freets: [], // list of freets to display in the feed
+      refreetChain: undefined,
+      freets: [],
+      eventListeners: [
+          {name: 'refresh-freets', func: this.refreshFreets},
+          {name: 'show-single-freet', func: this.getSingleFreet},
+          {name: 'show-all-freets', func: this.getFreets},
+          {name: 'show-following', func: this.getFollowing},
+          {name: 'search', func: this.search},
+          {name: 'show-refreet-chain', func: this.getRefreetChain},
+        ]
     }
   },
+  created() {
+    this.eventListeners.forEach((e) => eventBus.$on(e.name, e.func));
+  },
+  beforeDestroy: function() {
+    this.eventListeners.forEach((e) => eventBus.$off(e.name, e.func));
+  },
+  mounted() {
+    this.refreshFreets();
+  },
   methods: {
-    getFreets() {
-      axios
-        .get('/api/freets')
-        .then(response => {
-          this.freets = response.data.slice().reverse();
+    refreshFreets() {
+      let q = undefined;
+      if (this.$route) {
+        q = this.$route.query;
+      }
+      this.sort = q.sort || 'newest';
+      if (q.id) {
+        this.getSingleFreet(q.id);
+      } else if (q.author) {
+        this.search(q.author);
+      } else if (q.following === 'true') {
+        this.getFollowing();
+      } else {
+        this.getFreets();
+      }
+    },
+
+    getFollowing() {
+      axios.get("/api/freets/" + encodeURIComponent(this.user.userID) + "/following")
+        .then((result) => {
+          this.freets = result.data;
+          this.viewFollowing = true;
+          this.searchingAuthor = "";
+          this.viewingId = "";
+        }).catch((error) => {
+          this.viewFollowing = true;
+          this.freets = [];
+          console.log(error);
         })
-    }
+    },
+    
+    getSingleFreet(id) {
+      this.$router.push({ name: 'Explore', query: { id: id } }).catch(()=>{});
+      axios.get(`/api/freets/${id}`)
+        .then((result) => {
+          this.freets = result.data;
+          this.searchingAuthor = "";
+          this.viewFollowing = false;
+          this.viewingId = id;
+        }).catch((error) => {
+          this.viewingId = id;
+          this.freets = [];
+          console.log(error);
+        })
+    },
+    
+    getFreets() {
+      axios.get(`/api/freets?sort=${this.sort}`)
+        .then((result) => {
+          this.freets = result.data;
+          this.searchingAuthor = "";
+          this.viewFollowing = false;
+          this.viewingId = "";
+        }).catch((error) => {
+          console.log(error);
+        })
+    },
+    
+    search(author) {
+      axios.get(`/api/freets/?author=${encodeURIComponent(author)}&sort=${this.sort}`)
+        .then((result) => {
+          this.freets = result.data;
+          this.searchingAuthor = author;
+          this.viewingId = "";
+        }).catch((error) => {
+          console.log(error);
+        })
+    },
+
+    getRefreetChain(id) {
+      axios.get(`/api/freets/${encodeURIComponent(id)}/children`)
+        .then((result) => {
+          this.refreetChain = result.data;
+        }).catch((error) => {
+          console.log(error);
+        })
+    },
   },
 }
 </script>

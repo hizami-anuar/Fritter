@@ -85,6 +85,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  overflow-x: hidden;
 }
 
 #nav {
@@ -99,4 +100,14 @@ export default {
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+
+::-webkit-scrollbar {
+    width:10px
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--red);
+    border-radius: 10px;
+}
+
 </style>

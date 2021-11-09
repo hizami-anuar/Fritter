@@ -40,6 +40,28 @@ class Freet {
     data.push(freet);
     return freet;
   }
+  
+  /**
+   * Sorts a list of freets
+   * @param {Freet[]} freets - list of freets to sort
+   * @param {String} sort - method of sorting (newest, popular, random)
+   */
+  static getSortedFreets(freets, sort) {
+    if (sort == "popular") {
+      freets = freets.reverse();
+      freets.sort(function(a, b){return b.likes.length - a.likes.length});
+    } else if (sort == "random") {
+      let i = freets.length;
+      while (i != 0) {
+        let r = Math.floor(Math.random() * i);
+        i--;
+        [freets[i], freets[r]] = [freets[r], freets[i]];
+      }
+    } else {
+      freets = freets.reverse();
+    }
+    return freets;
+  }
 
   /**
    * Get the refreet children of a freet recursively

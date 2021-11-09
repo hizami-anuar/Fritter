@@ -83,7 +83,7 @@ export default {
           })
         .then(() => {
           this.deactivate();
-          eventBus.$emit('freet-action-finished');
+          eventBus.$emit('refresh-freets');
         })
         route += this.parent.id;
       } else {
@@ -91,7 +91,7 @@ export default {
           .post(route, {content: this.content})
           .then(() => {
             this.deactivate();
-            eventBus.$emit('freet-action-finished');
+            eventBus.$emit('refresh-freets');
           });
       }
     },

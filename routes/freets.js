@@ -25,14 +25,14 @@ router.get('/', (req, res) => {
     } else {
       freets = [];
     }
+  } else if (req.query.following == "true") {
+    const user = Users.findOneUserID(req.session.userID);
+    freets = Freets.findAllByManyUserIDs(user.following, complex=true);
   } else {
     freets = Freets.findAll(complex=true);
   }
   const sort = req.query.sort;
-  freets = freets.reverse();
-  if (sort == "popular") {
-    freets.sort(function(a, b){return b.likes.length - a.likes.length});
-  }
+  freets = Freets.getSortedFreets(freets, sort);
   res.status(200).json(freets).end();
 });
 
@@ -134,22 +134,6 @@ router.delete('/:id?',
     const deletedFreet = Freets.deleteOne(id); 
     res.status(200).json(deletedFreet).end();
   });
-
-/**
- * Get list of freets by following.
- * 
- * @name GET /api/freets/:username/following
- * 
- * @return {Freet[]} - list of freets followed by the logged in user
- * @throws {403} - if user not logged in
- */
- router.get('/:username/following', [
-  validateThat.userIsLoggedIn,
-], (req, res) => {
-  const user = Users.findOneUserID(req.session.userID);
-  const freets = Freets.findAllByManyUserIDs(user.following, complex=true);
-  res.status(200).json(freets).end();
-});
 
 /**
  * Like a freet.

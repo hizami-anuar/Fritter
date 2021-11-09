@@ -89,7 +89,7 @@ export default {
      * Sends event that gets all Refreets of this post and displays on the righthand bar
      */
     getRefreetChain: function() {
-      eventBus.$emit('show-refreet-chain', { id: this.freet.freetID })
+      eventBus.$emit('show-refreet-chain', this.freet.freetID)
     },
     /**
      * When user finishes editing the post by either clicking enter or clicking outside of the textarea.
@@ -103,10 +103,10 @@ export default {
         axios
           .put('/api/freets/' + this.freet.freetID, { content: this.message })
           .then(() => {
-            eventBus.$emit('freet-action-finished');
+            eventBus.$emit('refresh-freets');
           })
       } else {
-        eventBus.$emit('freet-action-finished');
+        eventBus.$emit('refresh-freets');
       }
     },
     toggleEditing() {

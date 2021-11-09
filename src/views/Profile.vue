@@ -90,7 +90,7 @@ export default {
      * User just succesfully logged out of their account. Display Log In button in nav bar instead
      * of Signout.
      */
-    eventBus.$on('freet-action-finished', () => {
+    eventBus.$on('refresh-freets', () => {
       this.getUserFreets();
     });
   },
