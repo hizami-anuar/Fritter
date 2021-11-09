@@ -107,22 +107,31 @@ export default {
 @import '../variables.scss';
 
 .two-panel-container {
+  height: 100%;
   display: flex;
   flex-direction: row;
 }
 
 .first-column {
-  height: calc(100vh - 66px);
+  height: 95%;
   width: 60vw;
 }
 
+.freet-scroll-container {
+  height: 80%;
+  overflow-y: scroll;
+}
+
 .second-column {
-  width: 35vw;
+  height: 100%;
+  width: 40vw;
+  overflow-y: scroll;
 }
 
 .sort-container {
   display: flex;
   justify-content: space-around;
+  height: 20%;
 }
 
 .sort-item {
@@ -130,14 +139,14 @@ export default {
 }
 
 .sort-icon {
-  width: 150px;
-  height: 150px;
+  width: auto;
+  height: calc(100% - 40px);
 }
 
 .sort-text {
   margin: 0px;
   padding: 0px;
-  font-size: 40px;
+  font-size: 30px;
   font-weight: bolder;
   color: $red;
 }

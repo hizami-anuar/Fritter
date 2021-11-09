@@ -1,10 +1,16 @@
 <template>
   <div class="home">
     <div v-if="user">
-      <AllFreets
-        :freets="freets"
-        :user="user"
-        :onlyFollowing="false" />
+      <div class="App-container">
+        <AllFreets v-if="freets.length > 0"
+          :freets="freets"
+          :user="user"
+          :onlyFollowing="false" />
+        <div v-else>
+          <h1>You aren't following any users!</h1>
+          <h1>Go to <router-link :to="{ name: 'Explore' }">Explore</router-link> to discover other users!</h1>
+        </div>
+      </div>
     </div>
     <div v-else>
       <h1>Hoot hoot! Welcome to Fritter! Create an account or login to begin!</h1>
@@ -51,7 +57,6 @@ export default {
         axios
           .get(`/api/freets/?following=true&sort=${this.sort}`)
           .then(response => {
-            console.log("RESPONSE", response);
             this.freets = response.data;
           })
       }

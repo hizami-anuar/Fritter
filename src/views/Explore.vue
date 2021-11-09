@@ -27,7 +27,7 @@ import AllFreets from '../components/AllFreets.vue';
 //import ActionBar from '../components/ActionBar.vue';
 
 export default {
-  name: "home",
+  name: "Explore",
   props: ["user"],
   components: { AllFreets /*FreetViewer, ActionBar*/ },
   data: function () {
@@ -139,7 +139,7 @@ export default {
 .App-container {
     max-width: 100%;
     width: 100vw;
-    height: 98vh;
+    height: calc(100vh - 75px);
 }
 
 .Main-container {

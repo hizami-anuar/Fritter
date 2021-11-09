@@ -47,54 +47,39 @@
     </div>
 
     <div v-if="freet != 'deleted'" class="freet-footer">
-      <template v-if="type=='complex'">
+      <template v-if="type=='complex' || type=='chain'">
         <span class="likes-container">
-          <template v-if="ownFreet">
-            <InteractiveIcon
-              v-if="liked()"
+          <template v-if="user">
+            <InteractiveIcon v-if="liked()"
               :handler="unlike"
               :hovertext="'Unlike'">   
-              <template v-slot:image>
-                <img class="logo" src="../assets/filled-heart.svg" />
-              </template>
+              <template v-slot:image><img class="interactive-icon" src="../assets/filled-heart.svg" /></template>
             </InteractiveIcon>
-            <InteractiveIcon
-              v-else
+            <InteractiveIcon v-else
               :handler="like"
               :hovertext="'Like'">   
-              <template v-slot:image>
-                <img class="logo" src="../assets/empty-heart.svg" />
-              </template>
+              <template v-slot:image><img class="interactive-icon" src="../assets/empty-heart.svg" /></template>
             </InteractiveIcon>
           </template>
-          <span v-if="likeError"> {{this.likeError}} </span>
+          <img v-else class="logo" src="../assets/empty-heart.svg" />
           <span> {{freet.likes.length}} </span>
         </span>
         <span class="interaction-container">
-          <InteractiveIcon
-            v-if="ownFreet"
+          <InteractiveIcon v-if="ownFreet"
             :handler="enableEdit"
             :hovertext="'Edit'">   
-            <template v-slot:image>
-              <img class="logo" src="../assets/edit.svg" />
-            </template>
+            <template v-slot:image><img class="interactive-icon" src="../assets/edit.svg" /></template>
           </InteractiveIcon>
-          <InteractiveIcon
-            v-if="ownFreet"
+          <InteractiveIcon v-if="ownFreet"
             :handler="deleteFreet"
             :hovertext="'Delete'">   
-            <template v-slot:image>
-              <img class="logo" src="../assets/trash.svg" />
-            </template>
+            <template v-slot:image><img class="interactive-icon" src="../assets/trash.svg" /></template>
           </InteractiveIcon>
         </span>
-        <InteractiveIcon
-          v-if="user"
+        <InteractiveIcon v-if="user"
           :handler="enableRefreet"
           :hovertext="'Refreet'">   
-          <template v-slot:image>
-            <img class="logo" src="../assets/refreet.svg" />
-          </template>
+          <template v-slot:image><img class="interactive-icon" src="../assets/refreet.svg" /></template>
         </InteractiveIcon>
       </template>
     </div>
@@ -110,7 +95,7 @@ import InteractiveIcon from "./InteractiveIcon";
 export default {
   name: "Freet",
   components: { InteractiveIcon },
-  props: ["freet", "user", "type", "hide"],
+  props: ["freet", "user", "type"],
   data() {
     return {
       variables: variables,
@@ -178,9 +163,7 @@ export default {
     enableRefreet() {
       this.refreeting = true;
     },
-    getRefreet() {
-      eventBus.$emit('show-single-freet', this.freet.freetID);
-    },
+
     deleteFreet() {
       if (confirm('Are you sure you want to delete freet?')) {
         axios.delete("/api/freets/" + encodeURIComponent(this.freet.freetID)).then(() => {
@@ -202,7 +185,6 @@ export default {
       })
     },
     cancel () {
-      this.hide();
       this.editFreetError = "";
     },
     hideChild () {
@@ -217,6 +199,7 @@ export default {
         eventBus.$emit("refresh-freets");
       }).catch((error) => {
         this.likeError = error.response.data.error;
+        alert(this.likeError);
       })
     },
     unlike () {
@@ -228,6 +211,7 @@ export default {
         eventBus.$emit("refresh-freets");
       }).catch((error) => {
         this.likeError = error.response.data.error;
+        alert(this.likeError);
       })
     },
     liked: function() {
@@ -340,13 +324,10 @@ section {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  width: calc(var(--freet-width) - 2 * 7.5px);
+  width: calc(var(--freet-width) - 2 * 37.5px);
   border: 7.5px solid var(--freet-color);
   border-radius: 20px;
-  margin-top: 5px;
-  margin-left: auto;
-  margin-right: auto;
-  overflow: hidden;
+  margin: 10px 30px 10px 30px;
   background-color: var(--freet-color);
 }
 
@@ -393,7 +374,7 @@ section {
   align-items: center;
   background: white;
   min-height: 60px;
-  width: 100%;
+  width: calc(100% - 2 * 10px);
   padding: 10px;
 }
 
@@ -409,7 +390,7 @@ section {
 
 .freet-footer {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   width: 100%;
 }
 
@@ -417,7 +398,6 @@ section {
   width: 20px;
   height: 20px;
   margin: 0px 2px 0px 2px;
-  cursor: pointer;
 }
 
 button {

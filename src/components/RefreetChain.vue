@@ -21,25 +21,11 @@
 
 <script>
 import Freet from './Freet';
-import variables from '../variables.scss';
 
 export default {
   name: "RefreetChain",
   components: { Freet },
   props: ["freet", "user"],
-  data() {
-    return {
-      variables: variables,
-      editing: false,
-      editFreetError: "",
-      newContent: "",
-      likeError: "",
-      refreeting: false,
-      refreetError: "",
-      refreetContent: "",
-      freetColor: "$red", 
-    }
-  }
 }
 </script>
 
@@ -58,8 +44,8 @@ export default {
 
 .children-left-bar {
   position: relative;
-  float: left;
-  left: 30px;
+  top: -10px;
+  left: 60px;
   height: auto;
   width: 10px;
   background-color: $purple;
@@ -68,7 +54,7 @@ export default {
 .children-display {
   position: relative;
   left: 15px;
-  width: calc(100% - 20px);
+  width: calc(100% - 25px);
   display: flex;
   flex-direction: column;
 }

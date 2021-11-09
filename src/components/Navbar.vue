@@ -154,8 +154,8 @@ export default {
     padding: 5px;
     margin: 0;
     background-color: var(--red);
-    height: auto;
-    width: 100;
+    height: 75px;
+    width: 100%;
     top: 0;
     justify-content: space-between;
     justify-items: center;
