@@ -3,9 +3,8 @@
     <AllFreets 
     :user="user" 
     :freets="freets" 
-    :refreetChain="refreetChain"
-    :noFreetsMessage="'User has no Freets!'">
-      <template v-slot:header>
+    :refreetChain="refreetChain">
+      <template v-slot>
         <div class="userInformation">
           <div class="profileLetter">
             {{profileOwner[0].toUpperCase()}}
@@ -155,7 +154,7 @@ export default {
     color: white;
     width: 100%;
     padding: 10px;
-    min-height: 200px;
+    min-height: 150px;
     background-color: var(--purple);
     padding: 15px;
   }
@@ -166,15 +165,14 @@ export default {
   }
 
   .profileLetter {
-    font-size: 100px;
+    font-size: 60px;
     border-radius: 50%;
     background-color: var(--red);
-    width: 200px;
-    height: 200px;
+    width: 110px;
+    height: 110px;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0 5px 10px 5px;
   }
   h1 {
     margin: 0;

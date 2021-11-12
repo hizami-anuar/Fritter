@@ -16,8 +16,8 @@
           :type="'complex'">
         </Freet>
       </div>
-
     </div>
+
     <div class="second-column">
       <template v-if="refreetChain">
         <RefreetChain 
@@ -103,13 +103,15 @@ export default {
 }
 
 .first-column {
-  height: 95%;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 75px);
+  overflow: hidden;
   width: 60vw;
 }
 
 .freet-scroll-container {
   padding-top: 30px;
-  height: 80%;
   overflow-y: scroll;
 }
 

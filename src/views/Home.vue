@@ -1,11 +1,11 @@
 <template>
   <div class="home">
     <div v-if="user">
-      <div class="App-container">
+      <div class="App-container" v-if="freets">
         <AllFreets v-if="freets.length > 0"
           :freets="freets"
           :user="user"
-          :onlyFollowing="false" />
+          :refreetChain="refreetChain" />
         <div v-else>
           <h1>You aren't following any users!</h1>
           <h1>Go to <router-link :to="{ name: 'Explore' }">Explore</router-link> to discover other users!</h1>
@@ -30,19 +30,34 @@ export default {
   components: { AllFreets },
   mounted() {
     this.refreshFreets(); 
-    eventBus.$on('refresh-freets', () => {
-      this.getFreets();
-    });
+    this.eventListeners.forEach((e) => eventBus.$on(e.name, e.func));
+  },
+  beforeDestroy: function() {
+    this.eventListeners.forEach((e) => eventBus.$off(e.name, e.func));
   },
   data() {
     return {
-      freets: [],
+      freets: undefined,
+      refreetChain: undefined,
       sort: 'newest',
+      eventListeners: [
+        {name: 'refresh-freets', func: this.refreshFreets},
+        {name: 'show-all-freets', func: this.getFreets},
+        {name: 'show-refreet-chain', func: this.getRefreetChain},
+      ]
     }
   },
   methods: {
     createAccountPage() {
       eventBus.$emit("show-create-account");
+    },
+    getRefreetChain(id) {
+      axios.get(`/api/freets/${encodeURIComponent(id)}/children`)
+        .then((result) => {
+          this.refreetChain = result.data;
+        }).catch((error) => {
+          console.log(error);
+        })
     },
     refreshFreets() {
       let q = undefined;
