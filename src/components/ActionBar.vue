@@ -1,19 +1,18 @@
 <template>
-  <div class="ActionBar">
-    <h1>Sort Options</h1>
-    <div class="sortOptions">
+  <div class="sort-bar">
+    <div class="sort-options">
       <div
         v-for="(option, index) of options"
         :key=index
         >
-        <div class="optionContainer">
+        <div class="option-container">
           <img 
-            :src="require('@/assets/' + imageNames[index] + '.svg')"  
-            @click="clickEvent(option)"
+            :src="require('@/assets/' + option.imageName + '.svg')"  
+            @click="clickEvent(option.type)"
             alt=option 
-            class="optionIcon">
+            class="option-icon">
         </div>
-        <h3>{{ option }}</h3>
+        <h3>{{ option.label }}</h3>
       </div>
     </div>
   </div>
@@ -25,13 +24,7 @@ import {eventBus} from "../main";
 export default {
   name: "ActionBar",
   components: {},
-  props: ["user"],
-  data() {
-    return {
-      options: ["Likes", "New", "Random"],
-      imageNames: ["filled-heart", "new", "random"]
-    };
-  },
+  props: ["user", "options"],
   created: function() {
   },
   mounted: function() {
@@ -45,13 +38,21 @@ export default {
 </script>
 
 <style scoped>
-  .sortOptions {
+  h3 {
+    color: purple;
+  }
+
+  .sort-bar {
+    width: 100%;
+  }
+
+  .sort-options {
     display: flex;
     justify-content: space-around;
     margin-top: 30px;
   }
 
-  .optionContainer {
+  .option-container {
     width: 80px;
     height: 80px;
     border: 1px solid var(--purple);
@@ -59,13 +60,13 @@ export default {
     border-radius: 50%;
   }
 
-  .optionIcon {
+  .option-icon {
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(98deg) brightness(106%) contrast(101%);
     width: 40px;
     margin: 20px;
   }
 
-  .optionIcon:hover {
+  .option-icon:hover {
     cursor: pointer;
   }
 </style>

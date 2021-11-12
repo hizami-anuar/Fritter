@@ -2,7 +2,7 @@
   <div class="two-panel-container">
     <div class="first-column">
       <div class="sort-container">
-        <SortBar />
+        <ActionBar :options="sortOptions" />
       </div>
 
       <div class="freet-scroll-container">
@@ -35,12 +35,12 @@
 import axios from "axios";
 import Freet from "./Freet";
 import RefreetChain from "./RefreetChain";
-import SortBar from "./SortBar";
+import ActionBar from "./ActionBar";
 import { eventBus } from "../main";
 
 export default {
   name: "freets",
-  components: { Freet, RefreetChain, SortBar },
+  components: { Freet, RefreetChain, ActionBar },
   props: ["user", "freets", "refreetChain"],
   data() {
     return {
@@ -50,6 +50,11 @@ export default {
         sort: "newest",
         eventListeners: [
           {name: "sortFreets", func: this.setSort},
+        ],
+        sortOptions: [
+          {label: "New", type: "newest", imageName: "new"},
+          {label: "Likes", type: "popular", imageName: "filled-heart"},
+          {label: "Random", type: "random", imageName: "random"},
         ],
     };
   },
@@ -74,40 +79,10 @@ export default {
       })
     },
 
-    setSort(sort) {
-      switch (sort) {
-        case "New":
-          this.setSortNewest();
-          break;
-        case "Likes":
-          this.setSortPopular();
-          break;
-        case "Random":
-          this.setSortRandom();
-          break;
-      }
-    },
-
-    setSortNewest() {
-      this.sort = "newest";
+    setSort(sortType) {
+      this.sort = sortType;
       let query = Object.assign({}, this.$route.query);
-      query.sort = 'newest';
-      delete query.id;
-      this.$router.push({ query: query }).catch(()=>{});
-    },
-
-    setSortPopular() {
-      this.sort = "popular";
-      let query = Object.assign({}, this.$route.query);
-      query.sort = 'popular';
-      delete query.id;
-      this.$router.push({ query: query }).catch(()=>{});
-    },
-
-    setSortRandom() {
-      this.sort = "random";
-      let query = Object.assign({}, this.$route.query);
-      query.sort = 'random';
+      query.sort = sortType;
       delete query.id;
       this.$router.push({ query: query }).catch(()=>{});
       eventBus.$emit('refresh-freets');
