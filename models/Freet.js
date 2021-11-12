@@ -81,6 +81,25 @@ class Freet {
   }
 
   /**
+   * Get the refreet parents of a freet recursively
+   * @param {number} freetID - ID of freet 
+   * @return {Freet[]} - refreet parent chain
+   */
+   static getParents(freetID) {
+    let freet = this.findOne(freetID, complex=true);
+    if (!freet) {
+      return "deleted";
+    }
+    if (freet.refreet) {
+      parents = Freet.getParents(freet.refreet);
+      parents.push(freet);
+      return parents;
+    } else {
+      return [freet]
+    }
+  }
+
+  /**
    * Given a Freet, get its refreet and author
    * @param {Freet} freet - freet object
    * @returns {Freet} - copy of freet with refreet and author

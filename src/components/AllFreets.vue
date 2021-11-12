@@ -131,7 +131,7 @@ export default {
 }
 
 .freet-scroll-container {
-  padding-top: 20px;
+  padding-top: 30px;
   height: 80%;
   overflow-y: scroll;
 }

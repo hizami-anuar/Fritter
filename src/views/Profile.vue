@@ -8,7 +8,7 @@
       <template v-slot:header>
         <div class="userInformation">
           <div class="profileLetter">
-            {{user.username[0]}}
+            {{user.username[0].toUpperCase()}}
           </div>
           <div class="information">
             <h1>@{{user.username}}</h1>
