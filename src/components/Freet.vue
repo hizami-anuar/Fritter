@@ -2,18 +2,20 @@
   <div class="freet-container" :style="style">
     <div v-if="freet != 'deleted'" class="freet-header">
       <span class="interaction-container">
-        <InteractiveIcon
-          :handler="viewProfile"
-          :hovertext="'View Profile'">
-          <template v-slot:image>
-            <span class="user-icon">
-              {{user.username[0].toUpperCase()}}
-            </span>
-            <p class="interactive">
-              @{{ freet.author }}
-            </p>
-          </template>
-        </InteractiveIcon>
+        <span class="author-container">
+          <InteractiveIcon
+            :handler="viewProfile"
+            :hovertext="'View Profile'">
+            <template v-slot:image>
+              <span class="user-icon">
+                {{user.username[0].toUpperCase()}}
+              </span>
+              <p class="interactive">
+                @{{ freet.author }}
+              </p>
+            </template>
+          </InteractiveIcon>
+        </span>
         <template v-if="type=='complex'">
           <p>&nbsp;</p>
           <InteractiveIcon v-if="user && !isFollowing"
@@ -441,11 +443,6 @@ button {
   padding: 0 5px;
 }
 
-.interactive:hover {
-  cursor: pointer;
-  color: $light-blue;
-}
-
 p {
   font-size: 20px;
   color: white;
@@ -467,8 +464,17 @@ p {
   width: 30px;
 }
 
-.user-icon:hover {
+.author-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.author-container:hover .user-icon {
   background: $light-blue;
+  cursor: pointer;
+}
+.author-container:hover .interactive {
+  color: $light-blue;
   cursor: pointer;
 }
 

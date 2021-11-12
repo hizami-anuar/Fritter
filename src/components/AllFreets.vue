@@ -118,6 +118,7 @@ export default {
   height: 100%;
   width: 40vw;
   overflow-y: scroll;
+  background: $grey;
 }
 
 .sort-container {
