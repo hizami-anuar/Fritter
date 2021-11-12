@@ -2,7 +2,10 @@
   <div class="two-panel-container">
     <div class="first-column">
       <div class="sort-container">
-        <ActionBar :options="sortOptions" />
+        <ActionBar
+          :user="user" 
+          :options="sortOptions" 
+        />
       </div>
 
       <div class="freet-scroll-container">

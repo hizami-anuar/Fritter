@@ -45,27 +45,12 @@
         @blur="submitRefreet($event)"
         @keydown.enter.exact.prevent="$event.target.blur()">
       </textarea>
-      <template v-if="type=='posting'">
-        <button @click="submitRefreet" :disabled="!refreetContent">Save</button>
-        <button @click="cancelRefreet">Cancel</button>
-      </template>
       <div v-if="['complex', 'posting'].includes(type)" class="refreet-container">
         <Freet
           v-if="freet.refreet"
           :freet="freet.refreet" 
           :user="user" 
           :type="'refreet'"/>
-        <div v-if="refreeting" class="refreeting-container">
-          <section>
-            <Freet
-              :freet="defaultRefreet"
-              :user="user"
-              :type="'posting'"
-              :hide="'hideChild'"/>
-            <div v-if="this.refreetError">{{this.refreetError}}</div>
-          </section>
-        </div>
-
         <span v-if="freet.edited" class="edited-text">Edited</span>
       </div>
       <div v-else-if="type=='refreet' && freet.refreet" class="refreet-container">
@@ -137,19 +122,16 @@ export default {
         'complex': variables.purple,
         'refreet': variables.lightPurple,
         'chain': variables.purple,
-        'posting': variables.purple,
       },
       otherFreetTypeColors: {
         'complex': variables.red,
         'refreet': variables.lightRed,
         'chain': variables.red,
-        'posting': variables.red,
       },
       freetTypeWidths: {
         'complex': '100%',
         'refreet': '100%',
         'chain': '100%',
-        'posting': '500px',
       }
     }
   },
@@ -191,7 +173,6 @@ export default {
   },
   created: function () {
     this.message = this.freet.content;
-    this.editing = this.type=="posting";
   },
   methods: {
     onTextInput () {
@@ -207,7 +188,7 @@ export default {
       this.editing = true;
     },
     enableRefreet() {
-      this.refreeting = true;
+      eventBus.$emit('start-refreet', this.freet);
     },
     viewProfile() {
       this.$router.push({ name: 'Profile', params: { username: this.freet.author } });
