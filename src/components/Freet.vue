@@ -8,7 +8,7 @@
             :hovertext="'View Profile'">
             <template v-slot:image>
               <span class="user-icon">
-                {{user.username[0].toUpperCase()}}
+                {{freet.author[0].toUpperCase()}}
               </span>
               <p class="interactive">
                 @{{ freet.author }}
