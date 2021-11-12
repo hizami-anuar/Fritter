@@ -1,10 +1,22 @@
 <template>
   <div class="freet-container" :style="style">
     <div v-if="freet != 'deleted'" class="freet-header">
-      <span class="freet-author-text"> @{{freet.author}}:</span>
       <span class="interaction-container">
-        <button v-if="type=='complex' || type=='chain'" v-on:click="getRefreetChain">Refreets</button>
+        
+        <InteractiveIcon
+          :handler="viewProfile"
+          :hovertext="'View Profile'">
+          <template v-slot:image>
+            <span class="user-icon">
+              {{user.username[0].toUpperCase()}}
+            </span>
+            <p class="interactive">
+              @{{ freet.author }}
+            </p>
+          </template>
+        </InteractiveIcon>
         <template v-if="type=='complex'">
+          <p>&nbsp;</p>
           <InteractiveIcon v-if="user && !isFollowing"
             :handler="follow"
             :hovertext="'Follow'">   
@@ -17,6 +29,9 @@
           </InteractiveIcon>
         </template>
       </span>
+      <span class="interaction-container">
+        <button v-if="type=='complex' || type=='chain'" v-on:click="getRefreetChain">Refreets</button>
+      </span>
     </div>
     <div class="freet-body">
       <p v-if="freet=='deleted'">This refreeted freet was deleted.</p>
@@ -27,9 +42,13 @@
         :id="`postComment-${this.freet.id}`"
         :disabled = '!this.editing'
         @input='onTextInput'
-        @blur="submitEditedFreet($event)"
+        @blur="submitRefreet($event)"
         @keydown.enter.exact.prevent="$event.target.blur()">
-    </textarea>
+      </textarea>
+      <template v-if="type=='posting'">
+        <button @click="submitRefreet" :disabled="!refreetContent">Save</button>
+        <button @click="cancelRefreet">Cancel</button>
+      </template>
       <div v-if="['complex', 'posting'].includes(type)" class="refreet-container">
         <Freet
           v-if="freet.refreet"
@@ -41,10 +60,8 @@
             <Freet
               :freet="defaultRefreet"
               :user="user"
-              :type="'posting'"/>
-            <input type="text" v-model="refreetContent" placeholder="New content here">
-            <button @click="submitRefreet" :disabled="!refreetContent">Save</button>
-            <button @click="cancelRefreet">Cancel</button>
+              :type="'posting'"
+              :hide="'hideChild'"/>
             <div v-if="this.refreetError">{{this.refreetError}}</div>
           </section>
         </div>
@@ -105,7 +122,7 @@ import InteractiveIcon from "./InteractiveIcon";
 export default {
   name: "Freet",
   components: { InteractiveIcon },
-  props: ["freet", "user", "type"],
+  props: ["freet", "user", "type", "hide"],
   data() {
     return {
       variables: variables,
@@ -192,6 +209,9 @@ export default {
     enableRefreet() {
       this.refreeting = true;
     },
+    viewProfile() {
+      this.$router.push({ name: 'Profile', params: { username: this.freet.author } });
+    },
 
     deleteFreet() {
       if (confirm('Are you sure you want to delete freet?')) {
@@ -217,7 +237,7 @@ export default {
       this.editFreetError = "";
     },
     hideChild () {
-      this.editing = false;
+      this.refreeting = false;
     },
     like () {
         axios.patch("/api/freets/" + encodeURIComponent(this.freet.freetID) + "/likes", {
@@ -232,7 +252,7 @@ export default {
       })
     },
     unlike () {
-        axios.delete("/api/freets/" + encodeURIComponent(this.freet.freetID) + "/likes", {
+      axios.delete(`/api/freets/${encodeURIComponent(this.freet.freetID)}/likes`, {
         id: this.freet.freetID,
         userID: this.user.userID
       }).then(() => {
@@ -243,24 +263,24 @@ export default {
         alert(this.likeError);
       })
     },
-    follow: function() {
-      axios.patch("/api/users/" + encodeURIComponent(this.freet.userID) + "/following").then(() => {
+    follow () {
+      axios.patch(`/api/users/${encodeURIComponent(this.freet.userID)}/following`).then(() => {
         eventBus.$emit("refresh-freets");
         eventBus.$emit("refresh-user");
       }).catch((error) => {
         console.log(error);
       })
     },
-    unfollow: function() {
-      axios.delete("/api/users/" + encodeURIComponent(this.freet.userID) + "/following").then(() => {
+    unfollow () {
+      axios.delete(`/api/users/${encodeURIComponent(this.freet.userID)}/following`).then(() => {
         eventBus.$emit("refresh-freets");
         eventBus.$emit("refresh-user");
       }).catch((error) => {
         console.log(error);
       })
     },
-    submitRefreet: function () {
-      axios.post("/api/freets", {content: this.refreetContent, refreet: this.freet.freetID})
+    submitRefreet () {
+      axios.post("/api/freets", {content: this.message, refreet: this.freet.refreet.freetID})
       .then(() => {
         this.refreeting = false;
         this.refreetContent = ""
@@ -271,11 +291,11 @@ export default {
         this.refreetError = error.response.data.error;
       })
     },
-    cancelRefreet: function() {
+    cancelRefreet () {
         this.refreeting = false;
         this.refreetError = "";
     },
-    getRefreetChain: function() {
+    getRefreetChain () {
       eventBus.$emit('show-refreet-chain', this.freet.freetID);
     }
   },
@@ -314,6 +334,7 @@ textarea:disabled {
 .interaction-container {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 .refreeting-container {
@@ -440,12 +461,35 @@ button {
   padding: 0 5px;
 }
 
+.interactive:hover {
+  cursor: pointer;
+  color: $light-blue;
+}
+
 p {
   font-size: 20px;
   color: white;
   font-family: 'Rowdies', Courier, monospace;
   text-decoration: none;
   margin: 0px;
+}
+
+.user-icon {
+  color: var(--freet-color);
+  font-size: 20px;
+  font-family: 'Rowdies', Courier, monospace;
+  border-radius: 50%;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  width: 30px;
+}
+
+.user-icon:hover {
+  background: $light-blue;
+  cursor: pointer;
 }
 
 

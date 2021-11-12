@@ -5,16 +5,6 @@
       :user="user" 
       :refreetChain="refreetChain"  
     />
-    <!--
-    <FreetViewer 
-      :user="user" 
-      :freets="freets" 
-      :followEnabled="true">
-      <template v-slot:freetOptions>
-        <ActionBar />
-      </template>
-    </FreetViewer>
-    -->
   </div>
 </template>
 
@@ -23,13 +13,11 @@ import axios from 'axios';
 import { eventBus } from "../main";
 
 import AllFreets from '../components/AllFreets.vue';
-// import FreetViewer from '../components/FreetViewer.vue';
-// import ActionBar from '../components/ActionBar.vue';
 
 export default {
   name: "Explore",
   props: ["user"],
-  components: { AllFreets /*FreetViewer, ActionBar*/ },
+  components: { AllFreets },
   data: function () {
     return {
       refreetChain: undefined,

@@ -1,20 +1,22 @@
 <template>
   <div class="profile">
-    <div class="userInformation">
-      <div class="profileLetter">
-        {{user.username[0]}}
-      </div>
-      <div class="information">
-        <h1>@{{user.username}}</h1>
-        <h2>Follower Count: {{followingCount}}</h2>
-      </div>
-    </div>
     <AllFreets 
     :user="user" 
     :freets="freets" 
     :refreetChain="refreetChain"
-    />
-
+    :noFreetsMessage="'User has no Freets!'">
+      <template v-slot:header>
+        <div class="userInformation">
+          <div class="profileLetter">
+            {{profileOwner[0].toUpperCase()}}
+          </div>
+          <div class="information">
+            <h1>@{{profileOwner}}</h1>
+            <h2>Follower Count: {{followingCount}}</h2>
+          </div>
+        </div>
+      </template>
+    </AllFreets>
     <!--  
     <div class="profileLabel">
       <h1>

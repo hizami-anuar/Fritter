@@ -37,11 +37,25 @@ router.get('/', (req, res) => {
 });
 
 /**
- * Get refreet chain of a freet
+ * Get recursive children of a freet
+ * 
+ * @name GET api/freets/:id/children
+ * 
+ * @param {string} id - id of freet
+ * @return {Freet} - freet object with additional children property
  */
 router.get('/:id/children', (req, res) => {
   const id = parseInt(req.params.id, 10);
   let freet = Freets.getChildren(id);
+  res.status(200).json(freet).end();
+})
+
+/**
+ * Get recursive parents of a freet
+ */
+router.get('/:id/parents', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  let freet = Freets.getParents(id);
   res.status(200).json(freet).end();
 })
 
