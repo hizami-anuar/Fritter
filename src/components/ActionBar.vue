@@ -1,14 +1,15 @@
 <template>
-  <div class="sort-bar">
-    <div class="sort-options">
+  <div class="action-bar">
+    <div class="action-bar-options">
       <div
         v-for="(option, index) of options"
         :key=index
         >
-        <div class="option-container">
+        <div class="option-container"
+          @click="handler(option.type)"
+        >
           <img 
             :src="require('@/assets/' + option.imageName + '.svg')"  
-            @click="clickEvent(option.type)"
             alt=option 
             class="option-icon">
         </div>
@@ -19,21 +20,9 @@
 </template>
 
 <script>
-import {eventBus} from "../main";
-
 export default {
   name: "ActionBar",
-  components: {},
-  props: ["user", "options"],
-  created: function() {
-  },
-  mounted: function() {
-  },
-  methods: {
-    clickEvent(option) {
-      eventBus.$emit("sortFreets", option);
-    }
-  },
+  props: ["user", "handler", "options"],
 };
 </script>
 
@@ -42,11 +31,11 @@ export default {
     color: purple;
   }
 
-  .sort-bar {
+  .action-bar {
     width: 100%;
   }
 
-  .sort-options {
+  .action-bar-options {
     display: flex;
     justify-content: space-around;
     margin-top: 30px;
@@ -58,15 +47,12 @@ export default {
     border: 1px solid var(--purple);
     background-color: var(--purple);
     border-radius: 50%;
+    cursor: pointer;
   }
 
   .option-icon {
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(98deg) brightness(106%) contrast(101%);
     width: 40px;
     margin: 20px;
-  }
-
-  .option-icon:hover {
-    cursor: pointer;
   }
 </style>

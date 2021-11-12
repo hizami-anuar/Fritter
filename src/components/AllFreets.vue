@@ -5,7 +5,7 @@
         <ActionBar
           :user="user" 
           :options="sortOptions" 
-        />
+          :handler="setSort"/>
       </div>
 
       <div class="freet-scroll-container">
@@ -14,18 +14,17 @@
           v-bind:key="freet.freetID" 
           :freet="freet" 
           :user="user" 
-          :type="'complex'">
-        </Freet>
+          :type="'complex'"/>
       </div>
 
     </div>
+
     <div class="second-column">
       <template v-if="refreetChain">
         <RefreetChain 
           :key="refreetChain.freetID"
           :freet="refreetChain"
-          :user="user"
-        />
+          :user="user"/>
       </template>
       <template v-else>
         <h3>Click on a Freet to view its Refreets!</h3>
@@ -51,9 +50,6 @@ export default {
         invalidFreet: false,
         freetFailMessage: "",
         sort: "newest",
-        eventListeners: [
-          {name: "sortFreets", func: this.setSort},
-        ],
         sortOptions: [
           {label: "New", type: "newest", imageName: "new"},
           {label: "Likes", type: "popular", imageName: "filled-heart"},
@@ -61,27 +57,7 @@ export default {
         ],
     };
   },
-  created() {
-    this.eventListeners.forEach((e) => eventBus.$on(e.name, e.func));
-  },
-  beforeDestroy: function() {
-    this.eventListeners.forEach((e) => eventBus.$off(e.name, e.func));
-  },
   methods: {
-    createNewFreet() {
-      axios.post("/api/freets", {content: this.newFreet})
-      .then(() => {
-        this.invalidFreet = false;
-        this.freetFailMessage = "";
-        this.newFreet = "";
-        eventBus.$emit('refresh-freets');
-      })
-      .catch((error) => {
-        this.invalidFreet = true;
-        this.freetFailMessage = error.response.data.error;
-      })
-    },
-
     setSort(sortType) {
       this.sort = sortType;
       let query = Object.assign({}, this.$route.query);
