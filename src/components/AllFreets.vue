@@ -35,7 +35,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import Freet from "./Freet";
 import RefreetChain from "./RefreetChain";
 import ActionBar from "./ActionBar";

@@ -68,13 +68,14 @@ export default {
       this.getFreets();
     },
     getFreets() {
-      if (this.user) {
-        axios
-          .get(`/api/freets/?following=true&sort=${this.sort}`)
-          .then(response => {
-            this.freets = response.data;
-          })
-      }
+      axios
+        .get(`/api/freets/?following=true&sort=${this.sort}`)
+        .then(response => {
+          this.freets = response.data;
+        }).catch((error) => {
+          this.freets = [];
+          console.log(error);
+        })
     }
   },
 }
