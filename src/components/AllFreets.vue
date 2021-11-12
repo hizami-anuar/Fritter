@@ -93,7 +93,7 @@ export default {
 }
 
 .second-column {
-  height: 100%;
+  height: calc(100vh - 75px);
   width: 40vw;
   overflow-y: scroll;
   background: $grey;
