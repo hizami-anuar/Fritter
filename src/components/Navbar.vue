@@ -70,16 +70,18 @@ export default {
         console.log(error);
       })
     },
-
     search () {
       if (this.author.includes(" ")) {
         alert('Search term cannot contain whitespaces')
         return;
       }
+      this.$router.push({ name: 'Profile', params: { username: this.author.trim() } });
+      /*
       eventBus.$emit("search", {
         author: this.author.trim()
       })
-    }, 
+      */
+    },
     login() {
       axios.post("/api/session", {username: this.username, password: this.password})
       .then((response) => {

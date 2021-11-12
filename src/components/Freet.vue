@@ -2,7 +2,6 @@
   <div class="freet-container" :style="style">
     <div v-if="freet != 'deleted'" class="freet-header">
       <span class="interaction-container">
-        
         <InteractiveIcon
           :handler="viewProfile"
           :hovertext="'View Profile'">
