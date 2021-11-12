@@ -4,7 +4,10 @@
       <slot></slot>
       
       <div class="sort-container">
-        <ActionBar :options="sortOptions" />
+        <ActionBar
+          :user="user" 
+          :options="sortOptions" 
+        />
       </div>
 
       <div class="freet-scroll-container">
@@ -119,6 +122,7 @@ export default {
   height: 100%;
   width: 40vw;
   overflow-y: scroll;
+  background: $grey;
 }
 
 .sort-container {

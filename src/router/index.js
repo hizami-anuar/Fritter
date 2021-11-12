@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Explore from '../views/Explore.vue'
 import Profile from '../views/Profile.vue'
-import ErrorPage from '../views/ErrorPage.vue'
+import Nonexistent from '../views/Nonexistent.vue'
 
 Vue.use(VueRouter);
 
@@ -27,7 +27,7 @@ const routes = [
   {
     path: '/*',
     name: 'Error',
-    component: ErrorPage
+    component: Nonexistent
   }
 ]
 
