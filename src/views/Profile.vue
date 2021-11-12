@@ -1,22 +1,20 @@
 <template>
   <div class="profile">
-    <FreetViewer 
+    <div class="userInformation">
+      <div class="profileLetter">
+        {{user.username[0]}}
+      </div>
+      <div class="information">
+        <h1>@{{user.username}}</h1>
+        <h2>Follower Count: {{followingCount}}</h2>
+      </div>
+    </div>
+    <AllFreets 
     :user="user" 
     :freets="freets" 
-    :followEnabled="false"
-    :noFreetsMessage="'User has no Freets!'">
-      <template v-slot:header>
-        <div class="userInformation">
-          <div class="profileLetter">
-            {{user.username[0]}}
-          </div>
-          <div class="information">
-            <h1>@{{user.username}}</h1>
-            <h2>Follower Count: {{followingCount}}</h2>
-          </div>
-        </div>
-      </template>
-    </FreetViewer>
+    :refreetChain="refreetChain"
+    />
+
     <!--  
     <div class="profileLabel">
       <h1>
@@ -44,21 +42,28 @@
 import axios from 'axios';
 import { eventBus } from "../main";
 
-import FreetViewer from '../components/FreetViewer.vue';
+import AllFreets from '../components/AllFreets.vue';
 
 export default {
   name: 'Profile',
   props: ['user'],
   components: {
-    FreetViewer
+    AllFreets
   },
   data: function () {
     return {
+      refreetChain: undefined,
       sameUser: undefined,
       freets: undefined,
       profileOwner: undefined,  // profile owner's username
       followingCount: undefined,
-      followEnabled: undefined
+      followEnabled: undefined,
+
+      eventListeners: [
+        {name: 'refresh-freets', func: this.refreshFreets},
+        {name: 'show-refreet-chain', func: this.getRefreetChain},
+        {name: 'refresh-freets', func: this.getUserFreets}
+      ]
     }
   },
   mounted: function () {
@@ -86,13 +91,7 @@ export default {
       }
     });
 
-    /**
-     * User just succesfully logged out of their account. Display Log In button in nav bar instead
-     * of Signout.
-     */
-    eventBus.$on('refresh-freets', () => {
-      this.getUserFreets();
-    });
+    this.eventListeners.forEach((e) => eventBus.$on(e.name, e.func));
   },
   methods: {
     /**
@@ -130,6 +129,18 @@ export default {
         .catch(() => null);
       this.freets = freets;
       return freets;
+    },
+
+    /**
+     * Gets sidepanel refreet chain
+     */
+    getRefreetChain(id) {
+      axios.get(`/api/freets/${encodeURIComponent(id)}/children`)
+        .then((result) => {
+          this.refreetChain = result.data;
+        }).catch((error) => {
+          console.log(error);
+        })
     },
   },
 }
