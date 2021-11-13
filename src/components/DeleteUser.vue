@@ -16,7 +16,8 @@ export default {
       if (confirm('Are you sure you want to delete your account? All your freets will be deleted too.')) {
         axios.delete('/api/users')
         .then(() => {
-            eventBus.$emit('logout-event')
+            eventBus.$emit('hide-settings');
+            eventBus.$emit('user-logout-success');
         })
       }
     },
