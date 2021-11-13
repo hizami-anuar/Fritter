@@ -23,14 +23,15 @@
     </div>
     
     <div class="NavBar-section NavBar-end">
-        <div v-if="user" class="NavBar-profile-container">Welcome {{user.username}}</div>
+        <div v-if="user" class="NavBar-profile-container">Welcome, {{user.username}}</div>
 
         <CreatePost :user='user' v-if="user">
           <img class="NavBar-icon" src="../assets/create.svg">
         </CreatePost>
 
         <button v-if="!user" v-on:click="loginPage"> Login </button>
-        <button v-if="user"  v-on:click="logout"> Logout </button>
+        <button v-if="user" v-on:click="logout"> Logout </button>
+        <button v-if="user" v-on:click="showSettings"> Settings </button>
       </div>
   </nav>
 </template>
@@ -112,6 +113,9 @@ export default {
         alert(error.response.data.message);
       })
     },
+    showSettings() {
+      eventBus.$emit('show-settings');
+    }
   },
 };
 </script>

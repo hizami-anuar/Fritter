@@ -40,16 +40,16 @@ router.post('/',
 });
 
 /**
- * Update a username.
+ * Update a user's username.
  * 
- * @name PUT /api/users/:username/edit
+ * @name PATCH /api/users/username
  * 
- * @param {string} newUsername - the new username
+ * @param {string} username - the new username
  * @return {User} - the updated User
  * @throws {403} - if user is not logged in
  * @throws {400} - if username is not formatted correctly - ie there is whitespace or special characters
  */
-router.put('/:username?/edit', 
+router.patch('/username', 
     [
         validateThat.userIsLoggedIn,
         validateThat.validUsername,
@@ -66,14 +66,14 @@ router.put('/:username?/edit',
 /**
  * Update a user's password.
  * 
- * @name PUT /api/users/
+ * @name PATCH /api/users/password
  * 
- * @param {string} newPassword - the new password
+ * @param {string} password - the new password
  * @return {User} - the updated User
  * @throws {403} - if user is not logged in
  * @throws {400} - if password is not formatted correctly - ie there is whitespace
  */
- router.put('/',
+ router.patch('/password',
     [
         validateThat.userIsLoggedIn,
         validateThat.validPassword,

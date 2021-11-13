@@ -20,11 +20,10 @@ export default {
   emits: ['logout-event'],
   methods: {
     deleteUser() {
-        axios
-        .delete('/api/users')
-        .then(() => {
-            eventBus.emit('logout-event')
-        })
+      axios.delete('/api/users')
+      .then(() => {
+          eventBus.$emit('logout-event')
+      })
     },
   },
 }

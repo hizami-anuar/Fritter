@@ -68,7 +68,7 @@ export default {
      */
     changeUsername() {
       axios
-        .put('/api/users/username', {'username': this.username})
+        .patch(`/api/users/username`, {'username': this.username})
         .then(async () => {
           this.usernameFeedback = {
             type: "success",
@@ -92,7 +92,7 @@ export default {
      */
     changePassword() {
       axios
-      .put('/api/users/password', {'password': this.password})
+      .patch('/api/users/password', {'password': this.password})
       .then(() => {
         this.passwordFeedback = {
           type: "success",
