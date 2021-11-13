@@ -44,37 +44,27 @@ export default {
 </script>
 
 <style scoped>
-    .eye {
-      width: 8%;
-    }
-    .settings {
-      position: fixed;
-      left: 0;
-      top: 0;
-      z-index: 2;
-      width: 100%;
-      height: 100%;
-      background: rgba(100, 100, 100, 0.5);
-    }
-    section {
-      border: 1px solid;  
-      background: white;
-      outline: solid white;
-      display: flex;
-      flex-direction: column;
-      width: 400px;
-      height: 500px;
-      position: absolute;
-      left: calc(50% - 200px);
-      top: calc(50% - 250px);
-      align-items: center;
-      padding: 25px;
-    }
-    p {
-      color: red
-    }
-
-    a {
-      margin: 0 10px;
-    }
+  .settings {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    background: rgba(100, 100, 100, 0.5);
+  }
+  section {
+    border: 1px solid;  
+    background: white;
+    outline: solid white;
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    height: 500px;
+    position: absolute;
+    left: calc(50% - 200px);
+    top: calc(50% - 250px);
+    align-items: center;
+    padding: 25px;
+  }
 </style>

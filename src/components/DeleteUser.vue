@@ -1,12 +1,6 @@
 <template>
-  <div class="delete user">
-    <form id="deleteUser" v-on:submit.prevent="deleteUser">
-      <router-link 
-        to="/"
-        v-on:click.prevent="deleteUser">
-        Delete My Account
-      </router-link>
-    </form>
+  <div class="delete-user">
+    <button class="delete-button" v-on:click="deleteUser">Delete My Account</button>
   </div>
 </template>
 
@@ -17,14 +11,24 @@ import { eventBus } from "../main";
 
 export default {
   name: 'DeleteUser',
-  emits: ['logout-event'],
   methods: {
     deleteUser() {
-      axios.delete('/api/users')
-      .then(() => {
-          eventBus.$emit('logout-event')
-      })
+      if (confirm('Are you sure you want to delete your account? All your freets will be deleted too.')) {
+        axios.delete('/api/users')
+        .then(() => {
+            eventBus.$emit('logout-event')
+        })
+      }
     },
   },
 }
 </script>
+
+<style lang="scss" scoped>
+@import '../variables.scss';
+  .delete-button {
+    background-color: $light-red;
+    color: black;
+    border: 3px solid $red;
+  }
+</style>
