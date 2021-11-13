@@ -373,20 +373,21 @@ section {
 
 .freet-header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   width: 100%;
   height: 35px;
+  padding-bottom: 5px;
 }
 
 .freet-author-icon {
-  margin: 0px;
-  width: 0px;
   height: 20px;
   width: 20px;
   font-weight: bold;
   color: $red;
   background: white;
   border-radius: 10px;
+  margin: 2px;
 }
 
 .freet-author-text {
@@ -425,6 +426,7 @@ section {
 }
 
 .icon {
+  margin: 2px;
   width: 20px;
   height: 20px;
   margin: 0px 2px 0px 2px;
@@ -444,11 +446,13 @@ button {
 }
 
 p {
+  line-height: 15px;
+  text-align: center;
   font-size: 20px;
   color: white;
   font-family: 'Rowdies', Courier, monospace;
   text-decoration: none;
-  margin: 0px;
+  margin: auto;
 }
 
 .user-icon {
@@ -462,6 +466,7 @@ p {
   align-items: center;
   height: 30px;
   width: 30px;
+  margin: 0 5px 0 0;
 }
 
 .author-container {
