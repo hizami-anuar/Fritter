@@ -46,7 +46,7 @@
         @blur="submitRefreet($event)"
         @keydown.enter.exact.prevent="$event.target.blur()">
       </textarea>
-      <div v-if="['complex', 'posting'].includes(type)" class="refreet-container">
+      <div v-if="['complex'].includes(type)" class="refreet-container">
         <Freet
           v-if="freet.refreet"
           :freet="freet.refreet" 
@@ -116,9 +116,6 @@ export default {
       editFreetError: "",
       message: "",
       likeError: "",
-      refreeting: false,
-      refreetError: "",
-      refreetContent: "",
       ownFreetTypeColors: {
         'complex': variables.purple,
         'refreet': variables.lightPurple,
@@ -218,9 +215,6 @@ export default {
     cancel () {
       this.editFreetError = "";
     },
-    hideChild () {
-      this.refreeting = false;
-    },
     like () {
         axios.patch("/api/freets/" + encodeURIComponent(this.freet.freetID) + "/likes", {
         id: this.freet.freetID,
@@ -260,22 +254,6 @@ export default {
       }).catch((error) => {
         console.log(error);
       })
-    },
-    submitRefreet () {
-      axios.post("/api/freets", {content: this.message, refreet: this.freet.refreet.freetID})
-      .then(() => {
-        this.refreeting = false;
-        this.refreetContent = ""
-        this.refreetError = "";
-        eventBus.$emit('refresh-freets')
-      })
-      .catch((error) => {
-        this.refreetError = error.response.data.error;
-      })
-    },
-    cancelRefreet () {
-        this.refreeting = false;
-        this.refreetError = "";
     },
     getRefreetChain () {
       eventBus.$emit('show-refreet-chain', this.freet.freetID);
@@ -317,23 +295,6 @@ textarea:disabled {
   display: flex;
   flex-direction: row;
   align-items: center;
-}
-
-.refreeting-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: auto;
-  border: 1px solid black;
-  margin-top: 3px;
-  padding: 3px;
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 2;
-  width: 100%;
-  height: 100%;
-  background: rgba(100, 100, 100, 0.5);
 }
 
 section {

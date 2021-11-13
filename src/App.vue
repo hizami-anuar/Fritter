@@ -4,9 +4,8 @@
       <Navbar :user="user" />
     </header>
 
-    <div v-if='user' id="welcome"> 
-    </div>
-    <Signup v-else/>
+    <Settings v-if="user" :user="user" />
+    <Signup v-else />
     
     <router-view 
       :user="user"
@@ -19,16 +18,18 @@
 import { eventBus } from './main';
 import Navbar from './components/Navbar.vue';
 import Signup from "./components/Signup.vue";
+import Settings from "./components/Settings.vue";
 import axios from "axios";
 
 export default {
   name: "app",
-  components: { Navbar, Signup, },
+  components: { Navbar, Signup, Settings, },
   data() {
     return {
       loggedIn: false,
       showLogin: false,
       showCreateAccount: false,
+      showSettings: false,
       user: false
     };
   },
@@ -65,6 +66,7 @@ export default {
       this.user = false;
       eventBus.$emit("refresh-freets");
     });
+
   },
   computed: {},
   methods: {
