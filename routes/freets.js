@@ -27,7 +27,9 @@ router.get('/', (req, res) => {
     }
   } else if (req.query.following == "true") {
     const user = Users.findOneUserID(req.session.userID);
-    freets = Freets.findAllByManyUserIDs(user.following, complex=true);
+    if (user) {
+      freets = Freets.findAllByManyUserIDs(user.following, complex=true);
+    }
   } else {
     freets = Freets.findAll(complex=true);
   }
