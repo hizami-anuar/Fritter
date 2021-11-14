@@ -60,6 +60,14 @@ export default {
       this.$router.replace('/profile');
     }
     
+    eventBus.$on("refresh-user", () => {
+      if (!this.$route.params.username ) {
+        axios.get('/api/session').then((user) => {
+          this.profileOwner = user.data.username;
+        }).catch(() => {});
+      }
+    });
+
     axios
       .get("/api/users")
       .then((response) => {
@@ -74,7 +82,8 @@ export default {
       .then(response => {
         let followers = response.data;
         this.followingCount = followers.length;
-        this.followEnabled = this.user && !this.followers.includes(this.user.username);
+        if (this.followers)
+          this.followEnabled = this.user && !this.followers.includes(this.user.username);
       });
 
     this.getUserFreets().then((freets) => {

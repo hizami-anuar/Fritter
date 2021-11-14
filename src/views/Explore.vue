@@ -91,6 +91,7 @@ export default {
     getFreets() {
       axios.get(`/api/freets?sort=${this.sort}`)
         .then((result) => {
+          console.log(result);
           this.freets = result.data;
           this.searchingAuthor = "";
           this.viewFollowing = false;

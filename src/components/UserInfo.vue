@@ -58,8 +58,7 @@ export default {
             type: "success",
             message: "Username changed successfully!",
           };
-          eventBus.$emit("user-change-event", {mode: 'CHANGE', param: 'username', value: this.username});
-          eventBus.$emit("name-change", this.username);
+          eventBus.$emit("refresh-user");
           this.username = '';
         })
         .catch(error => {
@@ -125,11 +124,11 @@ export default {
   }
 
   .error {
-    color: red;
+    color: var(--light-red);
   }
 
   .success {
-    color: green;
+    color: white;
   }
 
   input {

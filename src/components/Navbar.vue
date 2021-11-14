@@ -148,6 +148,7 @@ export default {
     height: 30px;
     width: 30px;
     margin: 0 0 0 5px;
+    filter: invert(84%) sepia(42%) saturate(336%) hue-rotate(110deg) brightness(105%) contrast(104%);
   }
 
   .NavBar-icon:hover {
@@ -155,7 +156,7 @@ export default {
   }
 
   .NavBar-icon.router-link-exact-active {
-    filter: invert(80%) sepia(71%) saturate(1171%) hue-rotate(109deg) brightness(100%) contrast(100%);
+    filter: invert(84%) sepia(42%) saturate(336%) hue-rotate(110deg) brightness(105%) contrast(104%);
   }
 
   .NavBar-main {
