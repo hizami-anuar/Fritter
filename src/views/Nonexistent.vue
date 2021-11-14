@@ -5,15 +5,13 @@
       <router-link to="/">Click back here to go home.</router-link>
     </div>
     <div class="text">
-      <h1>Fritter's available pages</h1>
+      <h2>Are you looking for one of these pages?</h2>
       <span class="left">
-        GET / -- Go to home page
+        <router-link :to="{ name: 'Home' }">Home</router-link> - Home page
         <br>
-        GET /explore -- Go to explore page to view all Freets or by an author.
+        <router-link :to="{ name: 'Explore' }">Explore</router-link> - View all Freets or by an author.
         <br>
-        GET /profile -- Go to your own profile page to update user info or delete account.
-        <br>
-        GET /profile/:username -- View another user's profile and their Freet history
+        <router-link :to="{ name: 'Profile' }">My Profile</router-link> - View your Freet history (must be logged in)
       </span>
     </div>
   </div>
