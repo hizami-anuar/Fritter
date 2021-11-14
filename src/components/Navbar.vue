@@ -31,7 +31,10 @@
         <div v-if="user" class="NavBar-profile-container">Welcome, {{user.username}}</div>
 
         <CreatePost :user='user' v-if="user">
-          <img class="NavBar-icon" src="../assets/create.svg">
+          <button class="createButton">
+            Create
+            <img class="NavBar-icon create-icon" src="../assets/create.svg">
+          </button>
         </CreatePost>
 
         <button v-if="!user" v-on:click="loginPage"> Login </button>
@@ -114,7 +117,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
   .logo {
     width: 50px;
   }
@@ -141,6 +144,12 @@ export default {
     margin: 0 10px;
   }
 
+  .create-icon {
+    height: 30px;
+    width: 30px;
+    margin: 0 0 0 5px;
+  }
+
   .NavBar-icon:hover {
     cursor: pointer;
   }
@@ -163,7 +172,6 @@ export default {
   }
 
   .NavBar-title {
-    /* color: rgb(73, 73, 73); */
     color: white;
     font-size: 30px;
     margin: 0px;
@@ -183,6 +191,14 @@ export default {
   .logout-button {
     margin-top: 10px;
     margin-right: 10px;
+  }
+
+  .createButton {
+    margin: 10px;
+    height: 45px;
+    font-size: 30px;
+    display: flex;
+    align-items: center;
   }
 
   .NavBar-searchBar {

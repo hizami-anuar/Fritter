@@ -17,8 +17,9 @@
         </div>
       </template>
     </AllFreets>
-    <div v-else>
+    <div class="noUser" v-else>
       User does not exist!
+      <router-link to="/"> Click here to go to the homepage </router-link>
     </div>
   </div>
 </template>
@@ -182,5 +183,10 @@ export default {
 
   .icon:hover {
     cursor: pointer;
+  }
+
+  .noUser {
+    margin: 10px;
+    font-size: 24px;
   }
 </style>

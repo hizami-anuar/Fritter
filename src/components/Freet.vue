@@ -43,8 +43,8 @@
         :id="`postComment-${this.freet.id}`"
         :disabled = '!this.editing'
         @input='onTextInput'
-        @blur="submitRefreet($event)"
-        @keydown.enter.exact.prevent="$event.target.blur()">
+        @blur="submitEditedFreet($event)"
+        @keydown.enter.exact="$event.target.blur()">
       </textarea>
       <div v-if="['complex'].includes(type)" class="refreet-container">
         <Freet

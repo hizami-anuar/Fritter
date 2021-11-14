@@ -2,9 +2,9 @@
   <div>
     <div class="settings" v-if="showSettings">
       <section>
+        <img src="../assets/close.svg" class="closeButton" @click='deactivate'/>
         <UserInfo :user="user" />
         <DeleteUser :user="user" />
-        <button v-on:click="deactivate">Close</button>
       </section>
     </div>
   </div>
@@ -54,10 +54,13 @@ export default {
     background: rgba(100, 100, 100, 0.5);
   }
 
+  .settings:hover {
+    cursor: pointer;
+  }
+
   section {
-    border: 1px solid;  
-    background: white;
-    outline: solid white;
+    color: white;
+    background: var(--purple);
     display: flex;
     flex-direction: column;
     width: 400px;
@@ -67,5 +70,10 @@ export default {
     top: calc(50% - 250px);
     align-items: center;
     padding: 25px;
+  }
+
+  .closeButton {
+    align-self: flex-end;
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(98deg) brightness(106%) contrast(101%);
   }
 </style>

@@ -8,23 +8,21 @@
           </span>
           <h2> @{{ this.user.username }} </h2>
         </div>
-        <textarea maxlength="140" name="content" placeholder="Click here to begin writing" v-model="content">
-        </textarea>
-        <div class="createRefreet" v-if="parent">
-          <label class="createRefreetLabel" for="createRefreetCard">
-            <span
-              class="removeRefreet"
-              v-on:click="() => setParent()"
-            >(undo)</span>
-          </label>
-          <PostCard
-            id="createRefreetCard"
-            :freet="parent"
-            :user="user"
-            :complex="false"
-            :index="0"
-          />
-        </div>
+        <main class="createContent">
+          <textarea maxlength="140" name="content" placeholder="Click here to begin writing" v-model="content">
+          </textarea>
+          <div class="createRefreet" v-if="parent">
+            <label class="createRefreetLabel" for="createRefreetCard">
+            </label>
+            <PostCard
+              id="createRefreetCard"
+              :freet="parent"
+              :user="user"
+              :complex="false"
+              :index="0"
+            />
+          </div>
+        </main>
         <div class="postBar">
           <span></span>
           <button v-on:click="deactivate"> Cancel </button>
@@ -32,12 +30,9 @@
         </div>
       </div>
     </div>
-    <button 
-      class="writeFreetButton"
-      v-else
-      v-on:click="activate">
+    <div @click="activate">
       <slot></slot>
-    </button>
+    </div>
   </div>
 </template>
 
@@ -157,6 +152,11 @@ export default {
     outline: none;
   }
 
+  .createContent {
+    background: white;
+    padding: 0 0 10px 0;
+  }
+
   button {
     margin: 0 0 0 10px;
   }
@@ -189,6 +189,7 @@ export default {
   }
 
   .postBar {
+    margin: 10px 0 0 0;
     display: flex;
     align-items: center;
   }

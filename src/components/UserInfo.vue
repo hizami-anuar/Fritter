@@ -7,15 +7,7 @@
         :class="usernameFeedback.type"
         v-if="usernameFeedback.message">
         {{ usernameFeedback.message }}</p>
-      <form id="changeUsername" v-on:submit.prevent="changeUsername">
-        <input
-          type="submit"
-          value="Update my Username"
-          class="button"
-          :disabled="username.length === 0"
-          v-on:click.prevent="changeUsername"
-        />
-      </form>
+      <button @click="changeUsername">Update my username</button>
     </div>
 
     <div class="userInfoGroup">
@@ -26,15 +18,7 @@
         :class="passwordFeedback.type"
         v-if="passwordFeedback.message">
         {{ passwordFeedback.message }}</p>
-      <form id="changePassword" v-on:submit.prevent="changePassword">
-        <input
-          type="submit"
-          value="Update my Password"
-          class="button"
-          :disabled="password.length === 0"
-          v-on:click.prevent="changePassword"
-        />
-      </form>
+      <button @click="changePassword">Update my password</button>
     </div>
   </div>
 </template>
@@ -132,12 +116,12 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 20px 0;
   }
-
+  
   .eye {
-    width: 8%;
-    margin: 5px;
+    margin-left: 5px;
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(98deg) brightness(106%) contrast(101%);
+    width: 25px;
   }
 
   .error {
@@ -149,6 +133,9 @@ export default {
   }
 
   input {
+    border-radius: 5px;
+    border: none;
+    height: 30px;
     font-size: 20px;
   }
 
@@ -156,5 +143,13 @@ export default {
     pointer-events: none; 
     background-color: #edf1f2;
     color: grey;
+  }
+
+  button {
+    font-size: 20px;
+    height: 28px;
+    margin: 10px;
+    border-radius: 5px;
+    padding: 0 5px;
   }
 </style>

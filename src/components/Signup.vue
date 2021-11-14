@@ -186,6 +186,7 @@ export default {
     align-content: center;
     justify-content: flex-start;
   }
+  
   .closeButton {
     align-self: flex-end;
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(98deg) brightness(106%) contrast(101%);
@@ -252,13 +253,5 @@ export default {
 
   a {
     margin: 0 10px;
-  }
-
-  button {
-    font-size: 20px;
-    height: 28px;
-    margin: 0;
-    border-radius: 5px;
-    padding: 0 5px;
   }
 </style>
