@@ -61,7 +61,6 @@ export default {
       followEnabled: undefined,
 
       eventListeners: [
-        {name: 'refresh-freets', func: this.refreshFreets},
         {name: 'show-refreet-chain', func: this.getRefreetChain},
         {name: 'refresh-freets', func: this.getUserFreets}
       ]
@@ -93,6 +92,9 @@ export default {
     });
 
     this.eventListeners.forEach((e) => eventBus.$on(e.name, e.func));
+  },
+  beforeDestroy: function() {
+    this.eventListeners.forEach((e) => eventBus.$off(e.name, e.func));
   },
   methods: {
     /**
