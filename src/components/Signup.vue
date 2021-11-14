@@ -1,46 +1,47 @@
 <template>
   <div class="container" v-if='isSigningIn'>
-    <div class="signup" v-if="isSigningIn">
+    <div class="signup">
       <img src="../assets/close.svg" class="closeButton" @click='cancelRequiredLogin'/>
       <section class="tabLinkContainer">
-        <h4 class="tabLink" @click="changeTab(0)">Sign up</h4>
-        <h4 class="tabLink" @click="changeTab(1)">Login</h4>
+        <h3 class="tabLink" @click="changeTab(0)" :class="{ active: tab === 0 }">Sign up</h3>
+        <h3 class="tabLink" @click="changeTab(1)" :class="{ active: tab === 1 }">Login</h3>
       </section>
       
       <section v-if="tab===0" class="signupInformation">
-        <h4>Username:</h4>
+        <h3>Username:</h3>
         <input type="text" id="username" placeholder="username" v-model="username">
         
-        <h4>Password:</h4>
+        <h3>Password:</h3>
         <div class="passwordField">
           <input :type="visibility['password']" placeholder="password" id="password" v-model="password">
           <img alt="password toggle" src="../assets/eye.png" class="eye" v-on:click.prevent="toggleVisibility('password')">
         </div>
 
-        <h4>Confirm Password:</h4>
+        <h3>Confirm Password:</h3>
         <div class="passwordField">
           <input :type="visibility['confirmPassword']" placeholder="password" id="confirmPassword" v-model="confirmPassword">
           <img alt="password toggle" src="../assets/eye.png" class="eye" v-on:click.prevent="toggleVisibility('confirmPassword')">
         </div>
         
         <p>{{this.errorMessage}}</p>
-        
-        <button @click="createAccount">Create Account</button>
+      
       </section>
 
       <section v-if="tab===1" class="signupInformation">
-        <h4>Username:</h4>
+        <h3>Username:</h3>
         <input type="text" id="username" placeholder="username" v-model="username">
 
-        <h4>Password:</h4>
+        <h3>Password:</h3>
         <div class="passwordField">
           <input :type="visibility['password']" placeholder="password" id="password" v-model="password">
           <img alt="password toggle" src="../assets/eye.png" class="eye" v-on:click.prevent="toggleVisibility('password')">
         </div>
         
         <p>{{this.errorMessage}}</p>
-        <button @click="logIn">Login</button>
       </section>
+
+      <button v-if="tab === 0" @click="createAccount">Sign up</button>
+      <button v-else-if="tab === 1" @click="logIn">Login</button>
     </div>
   </div>
 </template>
@@ -91,6 +92,7 @@ export default {
      */
     changeTab(tab) {
       this.tab = tab;
+      this.errorMessage = "";
     },
 
     /**
@@ -193,6 +195,10 @@ export default {
     margin: 5px;
   }
 
+  .tabLink.active {
+    color: var(--light-blue);
+  }
+
   .eye {
     margin-left: 5px;
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(98deg) brightness(106%) contrast(101%);
@@ -241,7 +247,7 @@ export default {
   }
   
   p {
-    color: var(--red);
+    color: var(--light-red);
   }
 
   a {

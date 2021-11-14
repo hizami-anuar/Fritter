@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div v-if="user">
-      <div class="App-container" v-if="freets">
+      <div v-if="freets">
         <AllFreets v-if="freets.length > 0"
           :freets="freets"
           :user="user"
@@ -12,9 +12,11 @@
         </div>
       </div>
     </div>
-    <div v-else>
-      <h1>Hoot hoot! Welcome to Fritter! Create an account or login to begin!</h1>
-      <button v-if="!user" @click="showCreateAccount"> Create New Account </button>
+    <div class="homepage" v-else>
+      <div class="title">Fritter</div>
+      <h3>Share your day with the world</h3>
+      <h3>"My first word was Hoot. My second word was hoot hoot. My third word..."</h3>
+      <button v-if="!user" @click="showCreateAccount"> Sign up </button>
     </div>
   </div>
 </template>
@@ -82,15 +84,38 @@ export default {
 </script>
 
 <style scoped>
-  .banner {
-    width: 70%;
-    max-height: 500px;
-    border-radius: 15px;
-    object-fit: cover;
+  .homepage {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: url("../assets/hooty-background.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+
+  .title {
+    background-color: var(--purple);
+    font-size: 144px;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    font-family: 'Rowdies', Courier, monospace;
+  }
+
+  h3 {
+    font-weight: bold;
   }
 
   .spacer {
     width: 100%;
     height: 1em;
+  }
+
+  button {
+    color: var(--purple);
+    border-color: var(--purple);
   }
 </style>

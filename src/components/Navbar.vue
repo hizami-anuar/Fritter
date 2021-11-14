@@ -35,7 +35,7 @@
         </CreatePost>
 
         <button v-if="!user" v-on:click="loginPage"> Login </button>
-        <PersonalDropdown
+        <PersonalDropdown v-if="user"
           :user="user"
           />
       </div>
