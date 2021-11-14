@@ -15,14 +15,6 @@
           :user="user" 
           :type="'chain'">
         </Freet>
-        <!--
-        <RefreetChain 
-          v-for="refreet of freet.children.filter((child) => child != 'deleted')"
-          :key="refreet.id"
-          :freet="refreet" 
-          :user="user">
-        </RefreetChain>
-        -->
       </div>
     </div>
   </div>

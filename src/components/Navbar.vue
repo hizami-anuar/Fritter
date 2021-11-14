@@ -1,9 +1,8 @@
 <template>
   <nav class="NavBar-main">
     <div class="NavBar-section">
-      <!--- <img alt="Fritter logo" src="../assets/navlogo.png" class="logo"> --->
       <router-link to="/"> <h1 class="NavBar-title"> Fritter </h1> </router-link>
-      <router-link exact-path :to="{ name: 'Home' }" tag="img" :src="require('@/assets/home.svg')" class="NavBar-icon"></router-link>
+      <router-link exact-path :to="{ name: 'Home' }" tag="img" :src="require('@/assets/home.svg')" class="NavBar-icon"> Home </router-link>
       <router-link exact-path :to="{ name: 'Explore' }" tag="img" :src="require('@/assets/explore.svg')" class="NavBar-icon"></router-link>
       <router-link exact-path :to="{ name: 'Profile' }" tag="img" :src="require('@/assets/profile.svg')" class="NavBar-icon" v-if="user">Profile</router-link>
     </div>
@@ -30,8 +29,9 @@
         </CreatePost>
 
         <button v-if="!user" v-on:click="loginPage"> Login </button>
-        <button v-if="user" v-on:click="logout"> Logout </button>
-        <button v-if="user" v-on:click="showSettings"> Settings </button>
+        <PersonalDropdown
+          :user="user"
+          />
       </div>
   </nav>
 </template>
@@ -39,13 +39,15 @@
 <script>
 import CreatePost from './CreatePost.vue';
 import SearchDropdown from'./SearchDropdown.vue';
+import PersonalDropdown from'./PersonalDropdown.vue';
+
 import axios from "axios";
 import {eventBus} from "../main";
 
 export default {
   name: "Navbar",
   props: ["user"],
-  components: { CreatePost, SearchDropdown },
+  components: { CreatePost, SearchDropdown, PersonalDropdown },
   computed: {
     filteredUsers () {
       let filtered = this.users.filter((user) => user.startsWith(this.author))
@@ -77,26 +79,6 @@ export default {
         return;
       }
       this.$router.push({ name: 'Profile', params: { username: this.author.trim() } });
-      /*
-      eventBus.$emit("search", {
-        author: this.author.trim()
-      })
-      */
-    },
-    login() {
-      axios.post("/api/session", {username: this.username, password: this.password})
-      .then((response) => {
-        eventBus.$emit("user-login-success", {
-            username: response.username, 
-            userID: response.userID,
-            following: response.following
-        }).catch((error) => {
-          console.log(error);
-        })
-      })
-      .catch(() => {
-        this.passwordIncorrect = true 
-      })
     },
     loginPage() {
         eventBus.$emit("show-login")

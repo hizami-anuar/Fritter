@@ -1,32 +1,45 @@
 <template>
-  <div>
+  <div class="container" v-if='isSigningIn'>
     <div class="signup" v-if="isSigningIn">
-      <section>
-        <div v-if="tab===0">
+      <img src="../assets/close.svg" class="closeButton" @click='cancelRequiredLogin'/>
+      <section class="tabLinkContainer">
+        <h4 class="tabLink" @click="changeTab(0)">Sign up</h4>
+        <h4 class="tabLink" @click="changeTab(1)">Login</h4>
+      </section>
+      
+      <section v-if="tab===0" class="signupInformation">
+        <h4>Username:</h4>
+        <input type="text" id="username" placeholder="username" v-model="username">
+        
+        <h4>Password:</h4>
+        <div class="passwordField">
+          <input :type="visibility['password']" placeholder="password" id="password" v-model="password">
+          <img alt="password toggle" src="../assets/eye.png" class="eye" v-on:click.prevent="toggleVisibility('password')">
+        </div>
+
+        <h4>Confirm Password:</h4>
+        <div class="passwordField">
+          <input :type="visibility['confirmPassword']" placeholder="password" id="confirmPassword" v-model="confirmPassword">
+          <img alt="password toggle" src="../assets/eye.png" class="eye" v-on:click.prevent="toggleVisibility('confirmPassword')">
         </div>
         
-        <h4>Username:</h4><input type="text" id="username" placeholder="username" v-model="username">
-        <h4>Password:</h4><input :type=visibility placeholder="password" id="password" v-model="password">
-        <img alt="password toggle" src="../assets/eye.png" class="eye" v-on:click.prevent="toggleVisibility">
         <p>{{this.errorMessage}}</p>
         
-        <form id="createAccount" v-on:submit.prevent="createAccount">
-          <input
-            type="submit"
-            value="Create Account"
-            class="button"
-            v-on:click.prevent="createAccount"
-          />
-        </form>
-        <form id="logIn" v-on:submit.prevent="logIn">
-          <input
-            type="submit"
-            value="Log In"
-            class="button"
-            v-on:click.prevent="logIn"
-          />
-        </form>
-        <button @click='cancelRequiredLogin'> Close </button>
+        <button @click="createAccount">Create Account</button>
+      </section>
+
+      <section v-if="tab===1" class="signupInformation">
+        <h4>Username:</h4>
+        <input type="text" id="username" placeholder="username" v-model="username">
+
+        <h4>Password:</h4>
+        <div class="passwordField">
+          <input :type="visibility['password']" placeholder="password" id="password" v-model="password">
+          <img alt="password toggle" src="../assets/eye.png" class="eye" v-on:click.prevent="toggleVisibility('password')">
+        </div>
+        
+        <p>{{this.errorMessage}}</p>
+        <button @click="logIn">Login</button>
       </section>
     </div>
   </div>
@@ -45,8 +58,12 @@ export default {
       cancelDest: null,
       username: '',
       password: '',
+      confirmPassword: '',
       errorMessage: '',
-      visibility: 'password', // to show or hide the currently typed password
+      visibility: {
+        password: "password",
+        confirmPassword: "password",
+      }
     };
   },
   mounted() {
@@ -54,24 +71,38 @@ export default {
      * Force login popup and redirect close button to Home
      */
     eventBus.$on('show-login', (cancelDest=null) => {
-       this.cancelDest = cancelDest;
-       this.activate();
+      this.cancelDest = cancelDest;
+      this.tab = 1;
+      this.activate();
     });
 
     /** 
      * Force create account popup and redirect close button to Home
      */
     eventBus.$on('show-create-account', (cancelDest=null) => {
-       this.cancelDest = cancelDest;
-       this.activate();
+      this.cancelDest = cancelDest;
+      this.tab = 0;
+      this.activate();
     });
   },
   methods: {
+    /**
+     * Changes tab to either 0 (create account) or 1 (login)
+     */
+    changeTab(tab) {
+      this.tab = tab;
+    },
+
     /**
      * Create an account and logs the user in if the create account was successful.
      * Otherwise, display a localized error message.
      */
     createAccount() {
+        if (this.password != this.confirmPassword) {
+          this.errorMessage = "Passwords do not match!"
+          return;
+        }
+
         axios
         .post('/api/users/', {'username': this.username, 'password': this.password})
         .then((response) => {
@@ -88,15 +119,15 @@ export default {
      * if log in was not successful.
      */
     logIn() {
-        axios
-        .post('/api/session/', {'username': this.username, 'password': this.password})
-        .then((response) => {
-            eventBus.$emit('user-login-success', response.data);
-            this.deactivate();
-        })
-        .catch(error => {
-            this.errorMessage = error.response.data.error;
-        })
+      axios
+      .post('/api/session/', {'username': this.username, 'password': this.password})
+      .then((response) => {
+          eventBus.$emit('user-login-success', response.data);
+          this.deactivate();
+      })
+      .catch(error => {
+          this.errorMessage = error.response.data.error;
+      })
     },
     /**
      * Open the pop up when the login button is clicked or login is required.
@@ -122,45 +153,106 @@ export default {
     /**
      * Toggle the visibility of the passwords to either show or in plain text.
      */
-    toggleVisibility() {
-      this.visibility = this.visibility === 'password'? 'text': 'password';
+    toggleVisibility(item) {
+      this.visibility[item] = this.visibility[item] == "password"? "text": "password";
     }
   }
 }
 </script>
 
 <style scoped>
-    .eye {
-      width: 8%;
-    }
-    .signup {
-      position: fixed;
-      left: 0;
-      top: 0;
-      z-index: 2;
-      width: 100%;
-      height: 100%;
-      background: rgba(100, 100, 100, 0.5);
-    }
-    section {
-      border: 1px solid;  
-      background: white;
-      outline: solid white;
-      display: flex;
-      flex-direction: column;
-      width: 400px;
-      height: 500px;
-      position: absolute;
-      left: calc(50% - 200px);
-      top: calc(50% - 250px);
-      align-items: center;
-      padding: 25px;
-    }
-    p {
-      color: red
-    }
+  .container {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    background: rgba(100, 100, 100, 0.5);
 
-    a {
-      margin: 0 10px;
-    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .tabLinkContainer {
+    display: flex;
+  }
+
+  .passwordField {
+    display: flex;
+    align-content: center;
+    justify-content: flex-start;
+  }
+  .closeButton {
+    align-self: flex-end;
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(98deg) brightness(106%) contrast(101%);
+  }
+
+  .tabLink {
+    margin: 5px;
+  }
+
+  .eye {
+    margin-left: 5px;
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(98deg) brightness(106%) contrast(101%);
+    width: 25px;
+  }
+
+  .tabLink:hover {
+    cursor: pointer;
+  }
+
+  .eye:hover {
+    cursor: pointer;
+  }
+
+  .closeButton:hover {
+    cursor: pointer;
+  }
+
+  input {
+    border-radius: 5px;
+    border: none;
+    height: 20px;
+  }
+
+  .signupInformation {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .signup {
+    z-index: 2;
+    color: white;
+    background: var(--purple);
+    outline: solid var(--purple);
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    height: 450px;
+    position: absolute;
+    left: calc(50% - 200px);
+    top: calc(50% - 250px);
+    align-items: center;
+    padding: 25px;
+  }
+  
+  p {
+    color: var(--red);
+  }
+
+  a {
+    margin: 0 10px;
+  }
+
+  button {
+    font-size: 20px;
+    height: 28px;
+    margin: 0;
+    border-radius: 5px;
+    padding: 0 5px;
+  }
 </style>

@@ -1,6 +1,7 @@
 <template>
   <div class="profile">
     <AllFreets 
+    v-if="userExists"
     :user="user" 
     :freets="freets" 
     :refreetChain="refreetChain">
@@ -16,26 +17,9 @@
         </div>
       </template>
     </AllFreets>
-    <!--  
-    <div class="profileLabel">
-      <h1>
-        {{user.username===profileOwner ? `My` : `${profileOwner}'s`}} Profile
-      </h1>
-      <div v-if="user&&!sameUser">
-        <img alt="Follow icon" class="icon" v-if="followEnabled" @click="follow" src="../assets/follow-empty.svg"/>
-        <img alt="Unfollow icon" class="icon" v-else @click="unfollow" src="../assets/follow-filled.svg"/>
-      </div>
+    <div v-else>
+      User does not exist!
     </div>
-    <div id="profileContent">
-      <img alt="Fritter logo" src="../assets/logo.png" class="hooty">
-      <UserInfo
-        v-if="sameUser"
-        @name-change="nameChange($event)"
-      />
-    </div>
-    <DeleteUser v-if="sameUser"/>
-    
-    -->
   </div>
 </template>
 
@@ -53,6 +37,7 @@ export default {
   },
   data: function () {
     return {
+      userExists: undefined,
       refreetChain: undefined,
       sameUser: undefined,
       freets: undefined,
@@ -75,6 +60,15 @@ export default {
       this.$router.replace('/profile');
     }
     
+    axios
+      .get("/api/users")
+      .then((response) => {
+        this.userExists = response.data.includes(this.profileOwner);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+
     axios
       .get(`/api/users/${this.profileOwner}/followers`)
       .then(response => {

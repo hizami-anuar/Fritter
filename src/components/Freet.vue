@@ -60,7 +60,7 @@
     </div>
 
     <div v-if="freet != 'deleted'" class="freet-footer">
-      <template v-if="type != 'refreet'">
+      <template v-if="type != 'refreet' && type != 'chain'">
         <span class="likes-container">
           <template v-if="user">
             <InteractiveIcon v-if="liked"

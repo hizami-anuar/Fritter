@@ -14,7 +14,7 @@
     </div>
     <div v-else>
       <h1>Hoot hoot! Welcome to Fritter! Create an account or login to begin!</h1>
-      <button v-if="!user" v-on:click="createAccountPage"> Create New Account </button>
+      <button v-if="!user" @click="showCreateAccount"> Create New Account </button>
     </div>
   </div>
 </template>
@@ -48,7 +48,7 @@ export default {
     }
   },
   methods: {
-    createAccountPage() {
+    showCreateAccount() {
       eventBus.$emit("show-create-account");
     },
     getRefreetChain(id) {

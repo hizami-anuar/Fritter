@@ -2,11 +2,16 @@
   <div>
     <div class="container" v-if='active'>
       <div class="createPost">
+        <div class="createHeader">
+          <span class="user-icon">
+            {{ this.user.username[0].toUpperCase() }}
+          </span>
+          <h2> @{{ this.user.username }} </h2>
+        </div>
         <textarea maxlength="140" name="content" placeholder="Click here to begin writing" v-model="content">
         </textarea>
         <div class="createRefreet" v-if="parent">
           <label class="createRefreetLabel" for="createRefreetCard">
-            {{parent.author}} said: 
             <span
               class="removeRefreet"
               v-on:click="() => setParent()"
@@ -21,7 +26,6 @@
           />
         </div>
         <div class="postBar">
-          <h2> {{ this.user.username }} </h2>
           <span></span>
           <button v-on:click="deactivate"> Cancel </button>
           <button v-on:click="createFreet" :disabled="content.length === 0"> Post </button>
@@ -120,7 +124,7 @@ export default {
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 2;
+    z-index: 10;
     width: 100%;
     height: 100%;
     background: rgba(100, 100, 100, 0.5);
@@ -135,19 +139,21 @@ export default {
     max-width: 600px;
     width: calc(100% - 20px);
     border: 1px solid;  
-    background: white;
-    outline: solid white;
+    background: var(--purple);
+    border: 7.5px solid var(--purple);
+    border-radius: 20px;
     margin: 10px;
   }
 
   textarea {
+    background: white;
+    color: blueviolet;
     min-height: 100px;
     width: calc(100% - 20px);
     height: 100%;
     resize: none;
     padding: 10px;
     border: none;
-    background: none;
     outline: none;
   }
 
@@ -159,11 +165,32 @@ export default {
     font-size: medium;
   }
 
-  .postBar {
-    border-top: 1px solid;
+  .createHeader {
     display: flex;
     align-items: center;
-    margin: 10px 10px 0px 10px;
+    justify-content: flex-start;
+    width: 100%;
+    height: 35px;
+    padding-bottom: 5px;
+  }
+
+  .user-icon {
+    color: var(--purple);
+    font-size: 20px;
+    font-family: 'Rowdies', Courier, monospace;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    width: 30px;
+    margin: 0 5px 0 0;
+  }
+
+  .postBar {
+    display: flex;
+    align-items: center;
   }
 
   .writeFreetButton {
@@ -194,6 +221,15 @@ export default {
   }
 
   h2 {
+    color: white;
     white-space: nowrap;
+  }
+
+  button {
+    font-size: 20px;
+    height: 28px;
+    margin: 0;
+    border-radius: 5px;
+    padding: 0 5px;
   }
 </style>

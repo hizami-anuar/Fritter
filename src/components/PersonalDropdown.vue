@@ -1,47 +1,66 @@
 <template>
   <div class="dropdown-menu">
-    <transition name="fade" apear>
+    <button @click="toggleOpen">HI</button>
+    <transition name="fade" appear>
       <div class="sub-menu" v-if="isOpen">
-        <router-link 
-          v-for="user in users" 
-          :key="user"
-          :to="{ name: 'Profile', params: { username: user }}"
-          tag="div"
-          class="dropdown-item">
-          {{ user }}
-        </router-link>
+        <div @click="showSettings"> 
+          Settings 
+        </div>
+        <div @click="logout"> 
+          Logout 
+        </div>
       </div>
     </transition>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import {eventBus} from "../main";
+
 export default {
   name: 'SearchDropdown',
+  components: {},
   props: ['users'],
   data () {
     return {
-      isOpen: true,
+      isOpen: false,
     }
   },
+  methods: {
+    logout() {
+      axios.delete("/api/session")
+      .then((response) => {
+        eventBus.$emit("user-logout-success", {
+            username: response.username, 
+            userID: response.userID
+        })
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      })
+
+      this.toggleOpen();
+    },
+    showSettings() {
+      eventBus.$emit('show-settings');
+      this.toggleOpen();
+    },
+    toggleOpen() {
+      this.isOpen = !this.isOpen
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '../variables.scss';
 
-.NavBar-searchBar:focus + .dropdown-menu {
-  opacity: 1;
-}
-
 .dropdown-menu {
   position: relative;
   transition: opacity 0.5s ease-out;
-  opacity: 0;
 }
 .dropdown-item {
-  display: flex;
-  align-items: center;
   font-size: 20px;
   height: 30px;
   padding: 5px 20px 5px 20px;
@@ -56,9 +75,13 @@ export default {
 }
 .sub-menu {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  left: auto;
+  right: 0;
+  margin-right: -10px;
   z-index: 2;
-  background-color: $light-red;
-  left: 45px;
+  background-color: var(--red);
   width: 250px;
   border-radius: 0px 0px 16px 16px;
   overflow: hidden;

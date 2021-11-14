@@ -53,6 +53,7 @@ export default {
     height: 100%;
     background: rgba(100, 100, 100, 0.5);
   }
+
   section {
     border: 1px solid;  
     background: white;
