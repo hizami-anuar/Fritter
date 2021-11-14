@@ -100,20 +100,22 @@ export default {
      * Otherwise, display a localized error message.
      */
     createAccount() {
-        if (this.password != this.confirmPassword) {
-          this.errorMessage = "Passwords do not match!"
-          return;
-        }
+      if (this.password != this.confirmPassword) {
+        this.errorMessage = "Passwords do not match!"
+        return;
+      }
 
-        axios
-        .post('/api/users/', {'username': this.username, 'password': this.password})
-        .then((response) => {
-          eventBus.$emit('user-login-success', response.data);
-          this.deactivate();
-        })
-        .catch(error => {
-            this.errorMessage = error.response.data.error;
-        })
+      axios
+      .post('/api/users/', {'username': this.username, 'password': this.password})
+      .then((response) => {
+        eventBus.$emit('user-login-success', response.data);
+        this.deactivate();
+      })
+      .catch(error => {
+          this.errorMessage = error.response.data.error;
+      })
+
+      eventBus.$emit("refresh-user");
     },
 
     /**

@@ -83,6 +83,9 @@ export default {
         .then(() => {
           this.deactivate();
           eventBus.$emit('refresh-freets');
+          if (this.$route.path !== '/explore' && this.$route.path !== '/profile') {
+            this.$router.push('/profile');
+          }
         })
         route += this.parent.id;
       } else {
@@ -91,6 +94,10 @@ export default {
           .then(() => {
             this.deactivate();
             eventBus.$emit('refresh-freets');
+
+            if (this.$route.path !== '/explore' && this.$route.path !== '/profile') {
+              this.$router.push('/profile');
+            }
           });
       }
     },

@@ -17,7 +17,9 @@ export default {
         axios.delete('/api/users')
         .then(() => {
             eventBus.$emit('hide-settings');
+            eventBus.$emit('refresh-user');
             eventBus.$emit('user-logout-success');
+            this.$router.push('/');
         })
       }
     },

@@ -71,6 +71,10 @@ export default {
   },
   mounted: function() {
     this.getUsers();
+
+    eventBus.$on("refresh-user", () => {
+      this.getUsers();
+    })
   },
   methods: {
     showDropdown () {

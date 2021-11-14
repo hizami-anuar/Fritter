@@ -106,7 +106,7 @@ class Freet {
    */
   static parseRefreet(freet) {
     let result = Object.assign({}, freet);
-    if (freet.refreet) {
+    if (freet && freet.hasOwnProperty('refreet') && freet.refreet) {
       result.refreet = Freet.findOne(freet.refreet, complex=true) || "deleted";
     } else {
       freet.refreet = undefined;
