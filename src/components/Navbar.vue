@@ -9,7 +9,13 @@
     
     <div class="NavBar-section NavBar-middle">
       <div class=NavBar-dropdown>
-        <input type="text" placeholder="Search by author name..." v-model="author" class="NavBar-searchBar"/>
+        <input 
+          @focus="showDropdown"
+          @blur="hideDropdown"
+          type="text" 
+          placeholder="Search by author name..." 
+          v-model="author" 
+          class="NavBar-searchBar"/>
         <SearchDropdown :users="filteredUsers" />
       </div>
       <input class="NavBar-icon NavBar-searchBarButton"
@@ -64,6 +70,12 @@ export default {
     this.getUsers();
   },
   methods: {
+    showDropdown () {
+      eventBus.$emit('show-dropdown');
+    },
+    hideDropdown () {
+      eventBus.$emit('hide-dropdown');
+    },
     getUsers () {
       axios.get("/api/users")
       .then((response) => {

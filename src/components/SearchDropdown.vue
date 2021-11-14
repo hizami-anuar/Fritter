@@ -1,9 +1,10 @@
 <template>
   <div class="dropdown-menu">
-    <transition name="fade" apear>
+    <transition name="fade" appear>
       <div class="sub-menu" v-if="isOpen">
         <router-link 
           v-for="user in users" 
+          @click.native="changeVisibility(false)"
           :key="user"
           :to="{ name: 'Profile', params: { username: user }}"
           tag="div"
@@ -16,29 +17,40 @@
 </template>
 
 <script>
+import { eventBus } from '../main'
 export default {
   name: 'SearchDropdown',
   props: ['users'],
   data () {
     return {
-      isOpen: true,
+      isOpen: false,
     }
   },
+  mounted: function() {
+    eventBus.$on('show-dropdown', () => {
+      this.changeVisibility(true);
+    })
+
+    eventBus.$on('hide-dropdown', () => {
+      this.changeVisibility(false);
+    })
+  },
+  methods: {
+    changeVisibility (visibility) {
+      this.isOpen = visibility
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '../variables.scss';
 
-.NavBar-searchBar:focus + .dropdown-menu {
-  opacity: 1;
-}
-
 .dropdown-menu {
   position: relative;
   transition: opacity 0.5s ease-out;
-  opacity: 0;
 }
+
 .dropdown-item {
   display: flex;
   align-items: center;
